@@ -1,4 +1,4 @@
-package com.nelepovds.ndutils.rest;
+package com.nelepovds.ndutils;
 
 import android.app.AlertDialog;
 import android.content.Context;
