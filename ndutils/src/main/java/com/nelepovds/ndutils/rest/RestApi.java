@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.lang.Class;import java.lang.Exception;import java.lang.Integer;import java.lang.Object;import java.lang.String;import java.lang.StringBuilder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 
@@ -34,6 +35,13 @@ public class RestApi {
 
     public String login;
     public String password;
+
+    public String getEndPointAPIMethodPath(String apiPath){
+        if (!apiPath.startsWith("/")){
+            apiPath="/"+apiPath;
+        }
+        return serviceBaseUrl+apiPath;
+    }
 
     public  String getServiceUrlString(String url, HttpMethods httpMethod, Object object) {
         return getStringFromUrl(url, httpMethod.name(), this.login, this.password, object);
@@ -174,17 +182,40 @@ public class RestApi {
         public ArrayList<T> data;
     }
 
-    protected String getEndpointList(Class<? extends BaseClass> classObject){
+    protected String getEndpointList(Class<? extends BaseClass> classObject,NDRestFilter restFilter){
         StringBuilder retEndPoint=new StringBuilder(this.serviceBaseUrl);
         retEndPoint.append("/list.php?objclass=");
         RestApiClassName restApiClassName = (RestApiClassName) classObject.getAnnotation(RestApiClassName.class);
         retEndPoint.append(restApiClassName.value());
+        //Filter
+        if (restFilter != null) {
+            retEndPoint.append("&Filter=");
+            String filterString = new Gson().toJson(restFilter);
+            retEndPoint.append(URLEncoder.encode(filterString));
+        }
+
         return retEndPoint.toString();
     }
 
-    public <T extends BaseClass> ResultData listObjects(Class<T> classObject, Select cache){
+    public <T extends Object> ResultData listObjects(Class<T> classObject,String apiPath){
         ResultData<T> retData= new ResultData();
-        String jsonObject = this.getServiceUrlString(this.getEndpointList(classObject),HttpMethods.GET,null);
+        String jsonObject = this.getServiceUrlString(getEndPointAPIMethodPath(apiPath),HttpMethods.GET,null);
+        ArrayList<T> tempData =new ArrayList<T>();
+
+        retData = new Gson().fromJson(jsonObject,ResultData.class);
+        for (Object obj : retData.data){
+            String jsonStrObj = new Gson().toJson(obj);
+            T objT = new Gson().fromJson(jsonStrObj,classObject);
+            tempData.add(objT);
+        }
+        retData.data = tempData;
+
+        return retData;
+    }
+
+    public <T extends BaseClass> ResultData listObjects(Class<T> classObject,NDRestFilter restFilter, Select cache){
+        ResultData<T> retData= new ResultData();
+        String jsonObject = this.getServiceUrlString(this.getEndpointList(classObject,restFilter),HttpMethods.GET,null);
         ArrayList<T> tempData =new ArrayList<T>();
 
         retData = new Gson().fromJson(jsonObject,ResultData.class);
