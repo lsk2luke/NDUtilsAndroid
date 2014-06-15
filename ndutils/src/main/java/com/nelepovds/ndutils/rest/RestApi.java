@@ -9,6 +9,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -21,14 +22,20 @@ import org.apache.http.protocol.HTTP;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.lang.Class;import java.lang.Exception;import java.lang.Integer;import java.lang.Object;import java.lang.String;import java.lang.StringBuilder;
+import java.lang.Class;
+import java.lang.Exception;
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.String;
+import java.lang.StringBuilder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class RestApi {
-    public static enum HttpMethods{
-        GET,POST,DELETE,PUT
+    public static enum HttpMethods {
+        GET, POST, DELETE, PUT
     }
 
     public String serviceBaseUrl;
@@ -36,20 +43,53 @@ public class RestApi {
     public String login;
     public String password;
 
-    public String getEndPointAPIMethodPath(String apiPath){
-        if (!apiPath.startsWith("/")){
-            apiPath="/"+apiPath;
+    public static class RestApiRouteInfo {
+        public String className;
+        public String path;
+        public String idName;
+        public HttpMethods[] methods;
+
+        /**
+         * @param className
+         * @param path
+         * @param idName
+         * @param methods
+         */
+        public RestApiRouteInfo(Class className, String path, String idName, HttpMethods[] methods) {
+            this.className = className.getName();
+            this.path = path;
+            this.idName = idName;
+            this.methods = methods;
         }
-        return serviceBaseUrl+apiPath;
     }
 
-    public  String getServiceUrlString(String url, HttpMethods httpMethod, Object object) {
-        return getStringFromUrl(url, httpMethod.name(), this.login, this.password, object);
+    public ArrayList<RestApiRouteInfo> routes = new ArrayList<RestApiRouteInfo>();
+
+    public String getEndPointAPIMethodPath(String apiPath) {
+        if (!apiPath.startsWith("/")) {
+            apiPath = "/" + apiPath;
+        }
+        return serviceBaseUrl + apiPath;
     }
 
-    public static StringEntity getJsonEncoded(Object postObject){
-        StringEntity se=null;
-        if (postObject!=null){
+    public String apiCall(String apiMethod, HttpMethods httpMethod, BaseClass object) throws IOException {
+        return this.getServiceUrlString(getApiMethod(apiMethod), httpMethod, object.toString());
+    }
+
+    public String getApiMethod(String apiMethod) {
+        if (!apiMethod.startsWith("/")) {
+            apiMethod = "/" + apiMethod;
+        }
+        return serviceBaseUrl + apiMethod;
+    }
+
+    public String getServiceUrlString(String url, HttpMethods httpMethod, Object object) {
+        return getStringFromUrl(url, httpMethod, this.login, this.password, object);
+    }
+
+    public static StringEntity getJsonEncoded(Object postObject) {
+        StringEntity se = null;
+        if (postObject != null) {
 
             try {
 
@@ -61,44 +101,48 @@ public class RestApi {
                 e.printStackTrace();
             }
         }
-        return  se;
+        return se;
     }
 
-    public static  String getStringFromUrl(String url, String httpMethod,String user, String password, Object object) {
+    public static String getStringFromUrl(String url, HttpMethods httpMethod, String user, String password, Object object) {
         String retString = null;
         DefaultHttpClient httpclient = new DefaultHttpClient();
         try {
-            if (user != null && password !=null){
+            if (user != null && password != null) {
                 CredentialsProvider credProvider = new BasicCredentialsProvider();
                 credProvider.setCredentials(new AuthScope(
                                 AuthScope.ANY_HOST, AuthScope.ANY_PORT),
                         new UsernamePasswordCredentials(user,
-                                password));
+                                password)
+                );
                 httpclient.setCredentialsProvider(credProvider);
             }
 
 
-            HttpUriRequest httpUriRequest=new HttpPut();
-            if (httpMethod.equalsIgnoreCase("get")) {
-                httpUriRequest = new HttpPost(url);
-                if (object!=null) {
-                    ((HttpPost) httpUriRequest).setEntity(getJsonEncoded(object));
-                }
-            } else  if (httpMethod.equalsIgnoreCase("post")) {
-                httpUriRequest = new HttpPost(url);
-                if (object!=null) {
-                    ((HttpPost) httpUriRequest).setEntity(getJsonEncoded(object));
-                }
-            } else  if (httpMethod.equalsIgnoreCase("delete")) {
-                httpUriRequest = new HttpDelete(url);
-            } else  if (httpMethod.equalsIgnoreCase("put")) {
-                httpUriRequest = new HttpPut(url);
-                if (object!=null) {
-                    ((HttpPut) httpUriRequest).setEntity(getJsonEncoded(object));
-                }
+            HttpUriRequest httpUriRequest = new HttpGet();
+            switch (httpMethod) {
+                case POST:
+                    httpUriRequest = new HttpPost(url);
+                    if (object != null) {
+                        ((HttpPost) httpUriRequest).setEntity(getJsonEncoded(object));
+                    }
+                    break;
+                case PUT:
+                    httpUriRequest = new HttpPut(url);
+                    if (object != null) {
+                        ((HttpPut) httpUriRequest).setEntity(getJsonEncoded(object));
+                    }
+                    break;
+                case DELETE:
+                    httpUriRequest = new HttpDelete(url);
+                    break;
+                case GET:
+                    if (object != null) {
+                        httpUriRequest = new HttpPost(url);
+                        ((HttpPost) httpUriRequest).setEntity(getJsonEncoded(object));
+                    }
+                    break;
             }
-
-
 
             HttpResponse response = httpclient.execute(httpUriRequest);
             HttpEntity entity = response.getEntity();
@@ -114,7 +158,7 @@ public class RestApi {
                 retString = baos.toString("UTF-8");
             }
 
-        } catch ( IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             httpclient.getConnectionManager().shutdown();
@@ -122,68 +166,121 @@ public class RestApi {
         return retString;
     }
 
-    public RestApi(String mServiceBaseUrl, String mLogin, String mPassword){
+    public RestApi(String mServiceBaseUrl, String mLogin, String mPassword) {
         this.serviceBaseUrl = mServiceBaseUrl;
         this.login = mLogin;
-        this.password=mPassword;
+        this.password = mPassword;
+        this.routes = fillUpRoutes();
+    }
+
+    public ArrayList<RestApiRouteInfo> fillUpRoutes() {
+        return new ArrayList<RestApiRouteInfo>();
     }
 
 
     /**
      * object.php?objclass=UserClass&id=2
+     *
      * @return
      */
-    protected String getEndpointObjectId(Integer id,Class classObject){
-        StringBuilder retEndPoint=new StringBuilder(this.serviceBaseUrl);
-        retEndPoint.append("/object.php?objclass=");
-        RestApiClassName restApiClassName = (RestApiClassName) classObject.getAnnotation(RestApiClassName.class);
-        retEndPoint.append(restApiClassName.value());
-        if (id!=null) {
-            retEndPoint.append("&id=");
-            retEndPoint.append(id.toString());
+    protected String getEndpointObjectId(Long id, Class classObject, HttpMethods httpMethod) throws Exception {
+        StringBuilder retEndPoint = new StringBuilder(this.serviceBaseUrl);
+        //Search route
+        RestApiRouteInfo classRouteInfo = null;
+        for (RestApiRouteInfo routeInfo : this.routes) {
+            if (routeInfo.className.equalsIgnoreCase(classObject.getName()) && Arrays.binarySearch(routeInfo.methods, httpMethod) > -1) {
+                classRouteInfo = routeInfo;
+                break;
+            }
         }
+        if (classRouteInfo == null) {
+            throw new Exception("No route found for class " + classObject.getName() + " for method " + httpMethod.name());
+        }
+        retEndPoint.append("/");
+        if (id != null) {
+            retEndPoint.append(classRouteInfo.path.replaceFirst(":" + classRouteInfo.idName, id.toString()));
+        } else {
+            retEndPoint.append(classRouteInfo.path);
+        }
+
         return retEndPoint.toString();
     }
 
-    public <RT extends BaseClass> RT getObject(Integer id,Class<RT> classObject, Select cache){
+    private void checkError(String jsonObject) throws Exception {
+        String errorMessage = null;
+        try {
+            ResultData isError = new Gson().fromJson(jsonObject, ResultData.class);
+            if (isError != null && isError.error != null) {
+                errorMessage = isError.error;
+            }
+        } catch (Exception jsonEx) {
+            errorMessage = "Undefined error";
+        }
+        if (errorMessage != null) {
+            throw new Exception(errorMessage);
+        }
+
+    }
+
+    public <RT extends BaseClass> RT getObject(Long id, Class<RT> classObject, Select cache) throws Exception {
         RT retObject = null;
-        String jsonObject = this.getServiceUrlString(this.getEndpointObjectId(id, classObject), HttpMethods.GET, null);
-        retObject = RT.fromJson(jsonObject,classObject,cache);
-        return  retObject;
+        String jsonObject = this.getServiceUrlString(this.getEndpointObjectId(id, classObject, HttpMethods.GET), HttpMethods.GET, null);
+        this.checkError(jsonObject);
+        retObject = RT.fromJson(jsonObject, classObject, cache);
+        return retObject;
     }
 
 
-
-    public <RT extends BaseClass> RT postObject(RT object,Select cache){
+    public <RT extends BaseClass> RT postObject(RT object, Select cache) throws Exception {
         RT retObject = null;
-        String jsonObject = this.getServiceUrlString(this.getEndpointObjectId(null, object.getClass()), HttpMethods.POST, object);
-        retObject = (RT) RT.fromJson(jsonObject,object.getClass(),cache);
-        return  retObject;
+        String jsonObject = this.getServiceUrlString(this.getEndpointObjectId(null, object.getClass(), HttpMethods.POST), HttpMethods.POST, object);
+        this.checkError(jsonObject);
+        retObject = (RT) RT.fromJson(jsonObject, object.getClass(), cache);
+        return retObject;
     }
 
-    public <RT extends BaseClass> RT putObject(RT object,Select cache){
+
+    public <RT extends BaseClass> RT putObject(RT object, Select cache) throws Exception {
         RT retObject = null;
-        String jsonObject = this.getServiceUrlString(this.getEndpointObjectId(object.serverId, object.getClass()), HttpMethods.PUT, object);
-        retObject = (RT) RT.fromJson(jsonObject,object.getClass(),cache);
-        return  retObject;
+        String jsonObject = this.getServiceUrlString(this.getEndpointObjectId(object.serverId, object.getClass(), HttpMethods.PUT), HttpMethods.PUT, object);
+        this.checkError(jsonObject);
+        retObject = (RT) RT.fromJson(jsonObject, object.getClass(), cache);
+        return retObject;
     }
 
-    public <RT extends BaseClass> RT deleteObject(RT object, Select cache){
+    public <RT extends BaseClass> RT deleteObject(RT object, Select cache) throws Exception {
         RT retObject = null;
-        String jsonObject = this.getServiceUrlString(this.getEndpointObjectId(object.serverId, object.getClass()), HttpMethods.DELETE, null);
-        retObject = (RT) RT.fromJson(jsonObject,object.getClass(),cache);
-        return  retObject;
+        String jsonObject = this.getServiceUrlString(this.getEndpointObjectId(object.serverId, object.getClass(), HttpMethods.DELETE), HttpMethods.DELETE, null);
+        this.checkError(jsonObject);
+        retObject = (RT) RT.fromJson(jsonObject, object.getClass(), cache);
+        return retObject;
     }
 
-    public static class ResultData <T> {
+    public static class ResultData<T> {
         public Integer offset;
         public Integer limit;
         public Integer total;
         public ArrayList<T> data;
+        public String error;
+
+        public static <T extends BaseClass> ResultData<T> fromJson(String jsonObject, Class<T> classObject, Select cache) {
+            ResultData<T> retData = new ResultData();
+            ArrayList<T> tempData = new ArrayList<T>();
+
+            retData = new Gson().fromJson(jsonObject, ResultData.class);
+            for (Object obj : retData.data) {
+                String jsonStrObj = new Gson().toJson(obj);
+                tempData.add(BaseClass.fromJson(jsonStrObj, classObject, cache));
+            }
+
+            retData.data = tempData;
+            return retData;
+        }
+
     }
 
-    protected String getEndpointList(Class<? extends BaseClass> classObject,NDRestFilter restFilter){
-        StringBuilder retEndPoint=new StringBuilder(this.serviceBaseUrl);
+    protected String getEndpointList(Class<? extends BaseClass> classObject, NDRestFilter restFilter) {
+        StringBuilder retEndPoint = new StringBuilder(this.serviceBaseUrl);
         retEndPoint.append("/list.php?objclass=");
         RestApiClassName restApiClassName = (RestApiClassName) classObject.getAnnotation(RestApiClassName.class);
         retEndPoint.append(restApiClassName.value());
@@ -197,15 +294,15 @@ public class RestApi {
         return retEndPoint.toString();
     }
 
-    public <T extends Object> ResultData listObjects(Class<T> classObject,String apiPath){
-        ResultData<T> retData= new ResultData();
-        String jsonObject = this.getServiceUrlString(getEndPointAPIMethodPath(apiPath),HttpMethods.GET,null);
-        ArrayList<T> tempData =new ArrayList<T>();
+    public <T extends Object> ResultData listObjects(Class<T> classObject, String apiPath) {
+        ResultData<T> retData = new ResultData();
+        String jsonObject = this.getServiceUrlString(getEndPointAPIMethodPath(apiPath), HttpMethods.GET, null);
+        ArrayList<T> tempData = new ArrayList<T>();
 
-        retData = new Gson().fromJson(jsonObject,ResultData.class);
-        for (Object obj : retData.data){
+        retData = new Gson().fromJson(jsonObject, ResultData.class);
+        for (Object obj : retData.data) {
             String jsonStrObj = new Gson().toJson(obj);
-            T objT = new Gson().fromJson(jsonStrObj,classObject);
+            T objT = new Gson().fromJson(jsonStrObj, classObject);
             tempData.add(objT);
         }
         retData.data = tempData;
@@ -213,19 +310,19 @@ public class RestApi {
         return retData;
     }
 
-    public <T extends BaseClass> ResultData listObjects(Class<T> classObject,NDRestFilter restFilter, Select cache){
-        ResultData<T> retData= new ResultData();
-        String jsonObject = this.getServiceUrlString(this.getEndpointList(classObject,restFilter),HttpMethods.GET,null);
-        ArrayList<T> tempData =new ArrayList<T>();
+    public <T extends BaseClass> ResultData listObjects(Class<T> classObject, NDRestFilter restFilter, Select cache) {
+        ResultData<T> retData = new ResultData();
+        String jsonObject = this.getServiceUrlString(this.getEndpointList(classObject, restFilter), HttpMethods.GET, null);
+        ArrayList<T> tempData = new ArrayList<T>();
 
-        retData = new Gson().fromJson(jsonObject,ResultData.class);
-        for (Object obj:retData.data){
+        retData = new Gson().fromJson(jsonObject, ResultData.class);
+        for (Object obj : retData.data) {
             String jsonStrObj = new Gson().toJson(obj);
-            tempData.add(BaseClass.fromJson(jsonStrObj,classObject,cache));
+            tempData.add(BaseClass.fromJson(jsonStrObj, classObject, cache));
         }
 
         retData.data = tempData;
-        return  retData;
+        return retData;
     }
 
 }

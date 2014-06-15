@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"></LinearLayout>
+
+    <HorizontalScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/horizontalScrollView"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent">
+
+            <ListView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/_yearList"
+                android:layout_weight="1"
+                android:focusable="false" />
+
+            <ListView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/_monthList"
+                android:layout_weight="1" />
+
+            <ListView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/_dayList"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text=" "
+                android:id="@+id/textView"
+                android:layout_gravity="center"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:layout_weight="1" />
+
+            <ListView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/_hourList"
+                android:layout_weight="1" />
+
+            <ListView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/_minuteList"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select"
+            android:id="@+id/button"
+            android:layout_gravity="center_vertical|bottom" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/button2"
+            android:layout_gravity="center_vertical|bottom" />
+    </LinearLayout>
+
+</LinearLayout>

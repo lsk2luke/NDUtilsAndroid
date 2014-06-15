@@ -5,20 +5,79 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.query.Select;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
+import com.nelepovds.ndutils.CommonUtils;
 
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.Date;
 
 public class BaseClass extends Model{
 
     @SerializedName("id")
     @Column(name = "serverId")
-    public Integer serverId;
+    public Long serverId;
+
+
+    public static final Integer __OBJECT_STATE_CLIENT_SIDE = 0;
+    public static final Integer __OBJECT_STATE_SERVER_SIDE = 1;
+    @Column(name = "__object_server_state")
+    public Integer __object_server_state = __OBJECT_STATE_CLIENT_SIDE;
+
+    @Override
+    public String toString() {
+        String retString ="";
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.registerTypeAdapter(this.getClass(), new BaseClassAdapter()).setPrettyPrinting().create();
+        retString=gson.toJson(this);
+        return retString;
+    }
+
+    public static class BaseClassAdapter<T> implements JsonSerializer<T> {
+
+        @Override
+        public JsonElement serialize(T baseClass, Type type, JsonSerializationContext jsonSerializationContext) {
+            JsonObject jsonObject = new JsonObject();
+            Field[] fields = baseClass.getClass().getFields();
+            for (int i = 0; i < fields.length; i++) {
+                if (fields[i].isAnnotationPresent(SerializedName.class)){
+                    SerializedName serializedName = fields[i].getAnnotation(SerializedName.class);
+                    Object valueField = null;
+                    try {
+                        valueField = fields[i].get(baseClass);
+                        if (valueField != null){
+                            if (fields[i].getType().isAssignableFrom(String.class)) {
+                                jsonObject.addProperty(serializedName.value(), valueField.toString());
+                            } else if (fields[i].getType().isAssignableFrom(Integer.class)) {
+                                jsonObject.addProperty(serializedName.value(), (Integer) valueField);
+                            } else if (fields[i].getType().isAssignableFrom(Double.class)) {
+                                jsonObject.addProperty(serializedName.value(), (Double) valueField);
+                            }else if (fields[i].getType().isAssignableFrom(Date.class)) {
+                                jsonObject.addProperty(serializedName.value(), CommonUtils.formatDate((Date) valueField, CommonUtils.DATE_FULL_FORMAT));
+                            }else if (fields[i].getType().isAssignableFrom(Long.class)) {
+                                jsonObject.addProperty(serializedName.value(), (Long)valueField);
+                            }
+                        }
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            return jsonObject;
+        }
+    }
 
     public static  <RT extends BaseClass> RT fromJson(String json, Class<RT> classObject){
         RT retObject=null;
-        retObject= new Gson().fromJson(json,classObject);
+        retObject= new GsonBuilder().setDateFormat(CommonUtils.DATE_FULL_FORMAT).create().fromJson(json,classObject);
         return retObject;
     }
 
@@ -32,7 +91,7 @@ public class BaseClass extends Model{
      */
     public static  <RT extends BaseClass> RT fromJson(String json, Class<RT> classObject, Select cache){
         RT retObject = fromJson(json,classObject);
-        if (retObject!=null && cache != null){
+        if (retObject!=null && cache != null && retObject.serverId != null){
             retObject = cacheObject(retObject, cache);
         }
         return retObject;
