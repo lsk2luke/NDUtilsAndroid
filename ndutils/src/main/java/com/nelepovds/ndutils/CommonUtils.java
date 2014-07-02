@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -37,6 +39,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class CommonUtils {
 
@@ -191,6 +194,25 @@ public class CommonUtils {
         aa.setFillEnabled(true);
         aa.setDuration(duration);
         targetView.setAnimation(aa);
+    }
+
+    public static void openUrl(String url,Activity activity) {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        activity.startActivity(i);
+    }
+
+    public static void email(Activity activity,String email,String subject,String title){
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto",email, null));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        activity.startActivity(Intent.createChooser(emailIntent, title));
+    }
+
+    public static void openMap(Activity activity, String address) {
+        String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=%s", address);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        activity.startActivity(intent);
     }
 
 

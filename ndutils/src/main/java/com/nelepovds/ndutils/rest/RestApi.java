@@ -16,15 +16,21 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.FileEntity;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.Class;
 import java.lang.Exception;
@@ -38,6 +44,7 @@ import java.util.HashMap;
 
 
 public class RestApi {
+
     public static enum HttpMethods {
         GET, POST, DELETE, PUT
     }
@@ -49,13 +56,13 @@ public class RestApi {
 
 
     public <RT extends BaseClass> RT apiCall(String apiMethod, HttpMethods httpMethod, BaseClass object, Select cache, Class<RT> callBack) throws Exception {
-        String jsonAnswer = this.apiCall(apiMethod,httpMethod,object);
-        RT retObject = RT.fromJson(jsonAnswer,callBack,cache);
+        String jsonAnswer = this.apiCall(apiMethod, httpMethod, object);
+        RT retObject = RT.fromJson(jsonAnswer, callBack, cache);
         return retObject;
     }
 
     public String apiCall(String apiMethod, HttpMethods httpMethod, BaseClass object) throws Exception {
-        return this.getServiceUrlString(getApiMethod(apiMethod), httpMethod, object.toString());
+        return this.getServiceUrlString(getApiMethod(apiMethod), httpMethod, object);
     }
 
     private String getApiMethod(String apiMethod) {
@@ -84,21 +91,45 @@ public class RestApi {
         return se;
     }
 
-    public static String getStringFromUrl(String url, HttpMethods httpMethod, String user, String password, Object object) throws Exception{
-        String retString = null;
+    public static DefaultHttpClient client(String user, String password) {
         DefaultHttpClient httpclient = new DefaultHttpClient();
-        HttpResponse response = null;
-        try {
-            if (user != null && password != null) {
-                CredentialsProvider credProvider = new BasicCredentialsProvider();
-                credProvider.setCredentials(new AuthScope(
-                                AuthScope.ANY_HOST, AuthScope.ANY_PORT),
-                        new UsernamePasswordCredentials(user,
-                                password)
-                );
-                httpclient.setCredentialsProvider(credProvider);
+        if (user != null && password != null) {
+            CredentialsProvider credProvider = new BasicCredentialsProvider();
+            credProvider.setCredentials(new AuthScope(
+                            AuthScope.ANY_HOST, AuthScope.ANY_PORT),
+                    new UsernamePasswordCredentials(user,
+                            password)
+            );
+            httpclient.setCredentialsProvider(credProvider);
+        }
+        return httpclient;
+    }
+
+    public static ByteArrayOutputStream readResponse(HttpResponse response) throws Exception {
+        ByteArrayOutputStream baos = null;
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
+
+            baos = new ByteArrayOutputStream();
+            DataInputStream dis = new DataInputStream(entity.getContent());
+            byte[] buffer = new byte[1024];// In bytes
+            int realyReaded;
+            while ((realyReaded = dis.read(buffer)) > -1) {
+                baos.write(buffer, 0, realyReaded);
             }
 
+        }
+        if (response.getStatusLine().getStatusCode() >= 300) {
+            throw new Exception(baos.toString("UTF-8"));
+        }
+        return baos;
+    }
+
+    public static String getStringFromUrl(String url, HttpMethods httpMethod, String user, String password, Object object) throws Exception {
+        String retString = null;
+        DefaultHttpClient httpclient = RestApi.client(user, password);
+        HttpResponse response = null;
+        try {
             HttpUriRequest httpUriRequest = null;
             switch (httpMethod) {
                 case POST:
@@ -123,23 +154,7 @@ public class RestApi {
 
 
             response = httpclient.execute(httpUriRequest);
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                DataInputStream dis = new DataInputStream(entity.getContent());
-                byte[] buffer = new byte[1024];// In bytes
-                int realyReaded;
-
-                while ((realyReaded = dis.read(buffer)) > -1) {
-                    baos.write(buffer, 0, realyReaded);
-                }
-                retString = baos.toString("UTF-8");
-            }
-            if (response.getStatusLine().getStatusCode() >= 300){
-                throw new Exception(retString);
-            }
-
+            retString = readResponse(response).toString("UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -156,7 +171,7 @@ public class RestApi {
 
     public <RT extends BaseClass> RT getObject(String apiPath, Class<RT> classObject, Select cache) throws Exception {
         RT retObject = null;
-        String jsonObject = this.apiCall(apiPath,HttpMethods.GET,null);
+        String jsonObject = this.apiCall(apiPath, HttpMethods.GET, null);
         retObject = RT.fromJson(jsonObject, classObject, cache);
         return retObject;
     }
@@ -164,7 +179,7 @@ public class RestApi {
 
     public <RT extends BaseClass> RT postObject(String apiPath, RT object, Select cache) throws Exception {
         RT retObject = null;
-        String jsonObject = this.apiCall(apiPath,HttpMethods.POST,object);
+        String jsonObject = this.apiCall(apiPath, HttpMethods.POST, object);
         retObject = (RT) RT.fromJson(jsonObject, object.getClass(), cache);
         return retObject;
     }
@@ -172,17 +187,58 @@ public class RestApi {
 
     public <RT extends BaseClass> RT putObject(String apiPath, RT object, Select cache) throws Exception {
         RT retObject = null;
-        String jsonObject = this.apiCall(apiPath,HttpMethods.PUT,object);
+        String jsonObject = this.apiCall(apiPath, HttpMethods.PUT, object);
         retObject = (RT) RT.fromJson(jsonObject, object.getClass(), cache);
         return retObject;
     }
 
     public <RT extends BaseClass> RT deleteObject(String apiPath, RT object) throws Exception {
         RT retObject = null;
-        String jsonObject = this.apiCall(apiPath,HttpMethods.DELETE,object);
+        String jsonObject = this.apiCall(apiPath, HttpMethods.DELETE, object);
         object.delete();
         return retObject;
     }
 
+    public static class ResultData<RT extends BaseClass> extends BaseClass {
+        public Integer offset;
+        public Integer limit;
+        public Integer total;
+        public String error;
+        public ArrayList<RT> data;
+    }
+
+    public <RT extends BaseClass> ResultData<RT> getObjects(String apiPath, Class<RT> classObject, Select cache) throws Exception {
+        ResultData<RT> resultData = null;
+
+        resultData = this.apiCall(apiPath, HttpMethods.GET, null, cache, ResultData.class);
+        ArrayList<RT> tempObjects = new ArrayList<RT>();
+        for (Object tempOneObject : resultData.data) {
+            RT oneObj = RT.fromJsonTreeMap(tempOneObject, classObject, cache);
+            tempObjects.add(oneObj);
+        }
+        resultData.data = tempObjects;
+        return resultData;
+    }
+
+    public String postFile(File file, String apiMethod) throws Exception {
+        String retString = "";
+        DefaultHttpClient client = client(this.login, this.password);
+        String fullApiPath = getApiMethod(apiMethod);
+
+        HttpPost httppost = new HttpPost(fullApiPath);
+        FileEntity entity = new FileEntity(file, "binary/octet-stream");
+        try {
+            httppost.setEntity(entity);
+            System.out.println("executing request " + httppost.getRequestLine());
+            HttpResponse response = client.execute(httppost);
+            response = client.execute(httppost);
+            retString = readResponse(response).toString("UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            client.getConnectionManager().shutdown();
+        }
+        return retString;
+    }
 
 }

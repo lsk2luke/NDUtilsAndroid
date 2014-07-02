@@ -81,6 +81,13 @@ public class BaseClass extends Model{
         return retObject;
     }
 
+    public static  <RT extends BaseClass> RT fromJsonTreeMap(Object json, Class<RT> classObject){
+        RT retObject=null;
+        String jsonString = new GsonBuilder().setDateFormat(CommonUtils.DATE_FULL_FORMAT).create().toJson(json);
+        retObject = BaseClass.fromJson(jsonString,classObject);
+        return retObject;
+    }
+
     /**
      * Используя кеширование данных
      * @param json
@@ -96,6 +103,13 @@ public class BaseClass extends Model{
         }
         return retObject;
     }
+
+    public  static  <RT extends BaseClass> RT fromJsonTreeMap(Object json, Class<RT> classObject, Select cache){
+        String jsonString = new GsonBuilder().setDateFormat(CommonUtils.DATE_FULL_FORMAT).create().toJson(json);
+        return BaseClass.fromJson(jsonString,classObject,cache);
+    }
+
+
 
     public static <RT extends BaseClass> RT cacheObject(RT checkObject, Select cache){
         RT foundItem = cache.from(checkObject.getClass()).where("serverId = ?", checkObject.serverId).executeSingle();
