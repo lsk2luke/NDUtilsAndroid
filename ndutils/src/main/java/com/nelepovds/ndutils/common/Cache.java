@@ -88,6 +88,33 @@ public class Cache {
 		return fileSaved;
 	}
 
+    public File saveFileStreamed(String fileName, InputStream is) {
+        File fileSaved = null;
+        try {
+            fileSaved = new File(this.cacheDir, fileName);
+            fileSaved.mkdirs();
+            fileSaved.delete();
+            fileSaved.createNewFile();
+            FileOutputStream fos = new FileOutputStream(fileSaved);
+
+            byte[] buffer = new byte[1024];// In bytes
+            int realyReaded;
+            while ((realyReaded = is.read(buffer)) > -1) {
+                fos.write(buffer, 0, realyReaded);
+            }
+
+            fos.flush();
+            fos.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            fileSaved = null;
+        } finally {
+
+        }
+        return fileSaved;
+    }
+
 	public File saveFile(String fileName, ByteArrayOutputStream content) {
 		File fileSaved = null;
 		try {
