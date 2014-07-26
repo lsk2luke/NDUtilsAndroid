@@ -1,0 +1,8 @@
+<resources>
+    <declare-styleable name="DateTimeView">
+        <attr name="dateValue" format="string" />
+        <attr name="showControls" format="enum" />
+        <attr name="titleTextColor" format="color" />
+        <attr name="dateTimeSeparator" format="string" />
+    </declare-styleable>
+</resources>

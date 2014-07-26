@@ -23,6 +23,8 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
@@ -207,17 +209,28 @@ public class RestApi {
         public ArrayList<RT> data;
     }
 
-    public <RT extends BaseClass> ResultData<RT> getObjects(String apiPath, Class<RT> classObject, Select cache) throws Exception {
+    public <RT extends BaseClass> ResultData<RT> getObjects(String apiPath, Class<RT> classObject, Select cache, Boolean justCache) throws Exception {
         ResultData<RT> resultData = null;
-
         resultData = this.apiCall(apiPath, HttpMethods.GET, null, cache, ResultData.class);
         ArrayList<RT> tempObjects = new ArrayList<RT>();
         for (Object tempOneObject : resultData.data) {
             RT oneObj = RT.fromJsonTreeMap(tempOneObject, classObject, cache);
-            tempObjects.add(oneObj);
+            if (justCache == false) {
+                tempObjects.add(oneObj);
+            }
         }
         resultData.data = tempObjects;
         return resultData;
+    }
+
+    public <RT extends BaseClass> ResultData<RT> getObjects(String apiPath, Class<RT> classObject, Select cache) throws Exception {
+        return getObjects(apiPath, classObject, cache, false);
+    }
+
+    public NDFile postFile(File file, String apiMethod, Select cache) throws Exception {
+        String getFileString = this.postFile(file, apiMethod);
+        NDFile retFile = NDFile.fromJson(getFileString, NDFile.class, cache);
+        return retFile;
     }
 
     public String postFile(File file, String apiMethod) throws Exception {
@@ -226,13 +239,14 @@ public class RestApi {
         String fullApiPath = getApiMethod(apiMethod);
 
         HttpPost httppost = new HttpPost(fullApiPath);
+        httppost.addHeader("NDFILENAME", file.getName());
         FileEntity entity = new FileEntity(file, "binary/octet-stream");
         try {
             httppost.setEntity(entity);
-            System.out.println("executing request " + httppost.getRequestLine());
             HttpResponse response = client.execute(httppost);
             response = client.execute(httppost);
             retString = readResponse(response).toString("UTF-8");
+            System.out.println("RETSTRING:" + retString);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

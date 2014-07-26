@@ -119,6 +119,7 @@ public class CommonUtils {
     public static final String DATE_TIME_FORMAT = "HH:mm";
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String DATE_FULL_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FULL_FORMAT_FILE_SAVE = "yyyy_MM_dd_HH_mm_ss";
 
     public static Date parseDateTime(String givenDate, String formatType) {
         Date retDate = null;

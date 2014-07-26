@@ -23,4 +23,8 @@ public class NDFile extends BaseClass {
     @SerializedName(value = "authorId")
     @Column(name = "authorId")
     public Long authorId;
+
+    @SerializedName(value = "fileUrl")
+    @Column(name = "fileUrl")
+    public String fileUrl;
 }
