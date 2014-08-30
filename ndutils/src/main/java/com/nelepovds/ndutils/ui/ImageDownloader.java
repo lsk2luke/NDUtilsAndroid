@@ -66,7 +66,11 @@ public class ImageDownloader {
      * @param url       The URL of the image to download.
      * @param imageView The ImageView to bind the downloaded image to.
      */
-    public void download(final String url, final ImageView imageView) {
+    public void download(String url, final ImageView imageView) {
+
+        if (url.startsWith("http://") == false) {
+            url = "http://" + url;
+        }
 
         resetPurgeTimer();
         Bitmap bitmap = getBitmapFromCache(url);

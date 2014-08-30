@@ -1,5 +1,7 @@
 package com.nelepovds.ndutils.rest;
 
+import android.app.Activity;
+
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.google.gson.Gson;
@@ -56,6 +58,44 @@ public class RestApi {
     public String login;
     public String password;
 
+    public static interface IRestApiListener {
+        public <RT extends BaseClass> void complete(String apiMethod, Select cache, RT retObject);
+
+        public void error(String apiMethod, Select cache, Exception e);
+    }
+
+    public <RT extends BaseClass> void apiCall(final Activity activity, final String apiMethod, final HttpMethods httpMethod, final BaseClass object, final Select cache, final Class<RT> callBack, final IRestApiListener apiListener) {
+
+        if (activity != null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        final RT retObject = apiCall(apiMethod, httpMethod, object, cache, callBack);
+                        if (apiListener != null) {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    apiListener.complete(apiMethod, cache, retObject);
+                                }
+                            });
+
+                        }
+                    } catch (final Exception e) {
+                        if (apiListener != null) {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    apiListener.error(apiMethod, cache, e);
+                                }
+                            });
+                        }
+                    }
+                }
+            }).start();
+
+        }
+    }
 
     public <RT extends BaseClass> RT apiCall(String apiMethod, HttpMethods httpMethod, BaseClass object, Select cache, Class<RT> callBack) throws Exception {
         String jsonAnswer = this.apiCall(apiMethod, httpMethod, object);
@@ -215,7 +255,7 @@ public class RestApi {
         ArrayList<RT> tempObjects = new ArrayList<RT>();
         for (Object tempOneObject : resultData.data) {
             RT oneObj = RT.fromJsonTreeMap(tempOneObject, classObject, cache);
-            if (justCache == false) {
+            if (justCache == false || cache == null) {
                 tempObjects.add(oneObj);
             }
         }
