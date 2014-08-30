@@ -105,7 +105,9 @@ public class RestApi {
 
     public String apiCall(String apiMethod, HttpMethods httpMethod, BaseClass object) throws Exception {
         //TODO: Watch
-        object.__object_server_state = BaseClass.__OBJECT_STATE_SENDING;
+        if (object != null) {
+            object.__object_server_state = BaseClass.__OBJECT_STATE_SENDING;
+        }
         return this.getServiceUrlString(getApiMethod(apiMethod), httpMethod, object);
     }
 
