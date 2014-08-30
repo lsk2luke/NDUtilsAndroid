@@ -32,6 +32,11 @@ public class BaseClass extends Model {
     @Column(name = "__object_server_state")
     public Integer __object_server_state = __OBJECT_STATE_CLIENT_SIDE;
 
+    public Boolean isServerObject(){
+        return this.__object_server_state == __OBJECT_STATE_SERVER_SIDE;
+    }
+
+
     @Override
     public String toString() {
         String retString = "";
@@ -102,6 +107,8 @@ public class BaseClass extends Model {
     public static <RT extends BaseClass> RT fromJson(String json, Class<RT> classObject, Select cache) {
         RT retObject = fromJson(json, classObject);
         if (retObject != null && cache != null && retObject.serverId != null) {
+            //TODO: Watch
+            retObject.__object_server_state = __OBJECT_STATE_SERVER_SIDE;
             retObject = cacheObject(retObject, cache);
         }
         return retObject;
