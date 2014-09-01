@@ -60,7 +60,6 @@ public class RestApi {
 
     public static interface IRestApiListener {
         public <RT extends BaseClass> void complete(String apiMethod, Select cache, RT retObject);
-
         public void error(String apiMethod, Select cache, Exception e);
     }
 
