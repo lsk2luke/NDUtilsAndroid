@@ -21,6 +21,11 @@ public class RoundedTransformation implements com.squareup.picasso.Transformatio
         this.margin = margin;
     }
 
+    public RoundedTransformation(final float radius, final float margin) {
+        this.radius = (int) radius;
+        this.margin = (int) margin;
+    }
+
     @Override
     public Bitmap transform(final Bitmap source) {
         final Paint paint = new Paint();
