@@ -11,6 +11,7 @@
     <dimen name="size32">32dp</dimen>
     <dimen name="size64">64dp</dimen>
     <dimen name="size128">128dp</dimen>
+    <dimen name="size192">192dp</dimen>
     <dimen name="size20">20dp</dimen>
     <dimen name="size40">40dp</dimen>
     <dimen name="size48">48dp</dimen>
