@@ -83,18 +83,16 @@ public class NDFlickrPhotoSearchDialog extends Dialog {
         this.editTextFlickrPhotosSearch = (EditText) findViewById(R.id.editTextFlickrPhotosSearch);
         this.gridViewFlickPhotosSearch = (GridView) findViewById(R.id.gridViewFlickPhotosSearch);
 
-
-        this.editTextFlickrPhotosSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        this.editTextFlickrPhotosSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    searchPicture(v.getText().toString());
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    searchPicture(editTextFlickrPhotosSearch.getText().toString());
                 }
-                return false;
             }
-
-
         });
+
+
         this.gridViewFlickPhotosSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
