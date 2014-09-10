@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_hue">Тон</string>
+    <string name="title_saturation">Насыщенность</string>
+    <string name="title_value">Значение</string>
+    <string name="title_select_color">Выбрать цвет</string>
+    <string name="label_eraser">Ластик</string>
+    <string name="label_width">Толщина</string>
+    <string name="label_line">Линия</string>
+    <string name="label_alpha">Прозрачность</string>
+    <string name="title_apply_line_param">Применить параметры линии</string>
+</resources>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent"
+    android:padding="@dimen/size8"
+    android:orientation="vertical">
+
+    <RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <RelativeLayout
+                android:id="@+id/relativeLayoutVS"
+                android:layout_width="@dimen/size64"
+                android:layout_height="@dimen/size64"
+                android:layout_alignParentTop="false"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/size32">
+
+                <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/imageViewColorPresent"
+                android:layout_centerInParent="true"
+                    android:layout_margin="@dimen/size2" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/linearLayoutFirstColorPart">
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="New Text"
+                        android:id="@+id/textViewFirstColorPart"
+                        android:gravity="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/size32"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_hue"
+                        android:id="@+id/textView4"
+                        android:gravity="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/size12" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/linearLayoutSecondColorPart">
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="New Text"
+                        android:id="@+id/textViewSecondColorPart"
+                        android:gravity="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/size32"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_saturation"
+                        android:id="@+id/textView5"
+                        android:gravity="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/size12" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/linearLayoutThirdColorPart">
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="New Text"
+                        android:id="@+id/textViewThirdColorPart"
+                        android:gravity="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/size32"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_value"
+                        android:id="@+id/textView6"
+                        android:gravity="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/size12" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/size40"
+            android:text="@string/title_select_color"
+            android:id="@+id/buttonSelectColor"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/action_button_bg"
+            android:textColor="@color/colorBlack"
+            android:textStyle="bold"
+            android:textSize="@dimen/size16" />
+
+    </RelativeLayout>
+
+</LinearLayout>

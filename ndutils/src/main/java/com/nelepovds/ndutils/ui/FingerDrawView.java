@@ -13,6 +13,7 @@ import android.graphics.Xfermode;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -41,13 +42,14 @@ public class FingerDrawView extends View {
     private Canvas drawCanvas;
     //canvas bitmap
     private Bitmap canvasBitmap;
-//    http://stackoverflow.com/questions/11114625/android-canvas-redo-and-undo-operation
+    //    http://stackoverflow.com/questions/11114625/android-canvas-redo-and-undo-operation
 //    private Bitmap undoBitmap;
     private int currentColor = 0xff000000;
     private int currentAlpha = 255;
     private int currentBackgroundColor = Color.WHITE;
     private int currentStrokeWidth = 1;
     private File cacheDir;
+    private GestureDetector gestureDetector;
 
     public Bitmap getCurrentBitmap() {
         return this.canvasBitmap;
@@ -59,7 +61,7 @@ public class FingerDrawView extends View {
         void changeHistory(ArrayList<File> history);
     }
 
-    public  IFingerDrawViewListener fingerDrawViewListener;
+    public IFingerDrawViewListener fingerDrawViewListener;
 
 
     public static final int FDV_MAX_HISTORY_SIZE = 10;
@@ -75,7 +77,7 @@ public class FingerDrawView extends View {
 
 
     public void setCacheDir(File cacheDir) {
-        this.cacheDir = new File(cacheDir,"fingerDrawTemp");
+        this.cacheDir = new File(cacheDir, "fingerDrawTemp");
         this.cacheDir.mkdirs();
         this.cleanUpCache();
 
@@ -104,6 +106,33 @@ public class FingerDrawView extends View {
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
         drawPaint.setAlpha(this.currentAlpha);
         canvasPaint = new Paint(Paint.DITHER_FLAG);
+
+        this.gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                String swipe = "";
+                float sensitvity = 50;
+
+                if ((e1.getX() - e2.getX()) > sensitvity) {
+                    makedSwipeLeft();
+                } else if ((e2.getX() - e1.getX()) > sensitvity) {
+                    makedSwipeRight();
+                }
+
+                return super.onFling(e1, e2, velocityX, velocityY);
+            }
+        });
+    }
+
+    private void makedSwipeRight() {
+        if (this.historyDraw.size() > 1) {
+            Log.wtf("GO BACK","Reverse");
+        }
+    }
+
+    private void makedSwipeLeft() {
+
     }
 
     //size assigned to view
@@ -117,7 +146,7 @@ public class FingerDrawView extends View {
                     canvasBitmap.eraseColor(this.currentBackgroundColor);
                 }
                 drawCanvas = new Canvas(canvasBitmap);
-            }catch (Exception ex){
+            } catch (Exception ex) {
 
             }
         }
@@ -157,40 +186,51 @@ public class FingerDrawView extends View {
     //register user touches as drawing action
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        float touchX = event.getX();
-        float touchY = event.getY();
-        //respond to down, move and up events
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                drawPath.moveTo(touchX, touchY);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                drawPath.lineTo(touchX, touchY);
-                break;
-            case MotionEvent.ACTION_UP:
-                drawPath.lineTo(touchX, touchY);
-                drawCanvas.drawPath(drawPath, drawPaint);
-                drawPath.reset();
-                this.addDataToHistory();
+        float touchX = -1;
+        float touchY = -1;
+        if (event.getPointerCount() == 2) {
+            drawPath.reset();
+            return this.gestureDetector.onTouchEvent(event);
 
-                break;
-            default:
-                return false;
+
+        } else {
+            touchX = event.getX();
+            touchY = event.getY();
+            //respond to down, move and up events
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    drawPath.moveTo(touchX, touchY);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    drawPath.lineTo(touchX, touchY);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (drawPath.isEmpty() == Boolean.FALSE) {
+                        drawPath.lineTo(touchX, touchY);
+                        drawCanvas.drawPath(drawPath, drawPaint);
+                        drawPath.reset();
+                        this.addDataToHistory();
+                    }
+
+                    break;
+                default:
+                    return false;
+            }
+            //redraw
+            invalidate();
         }
-        //redraw
-        invalidate();
         return true;
 
     }
 
     private void addDataToHistory() {
-        if (this.cacheDir != null ) {
+        if (this.cacheDir != null) {
             String dateTimeFile = CommonUtils.formatDate(new Date(), CommonUtils.DATE_FULL_FORMAT_FILE_SAVE);
             String fileNameSave = "TempFingerDraw_" + dateTimeFile + ".png";
             File cacheTempImage = new File(this.cacheDir, fileNameSave);
             try {
                 if (canvasBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(cacheTempImage))) {
-                    this.historyDraw.add(0,cacheTempImage);
+                    this.historyDraw.add(0, cacheTempImage);
                     if (this.historyDraw.size() > this.historySize) {
                         this.historyDraw.remove(this.historyDraw.size() - 1);
                     }
@@ -198,7 +238,7 @@ public class FingerDrawView extends View {
                         this.fingerDrawViewListener.changeHistory(this.historyDraw);
                     }
                 }
-            }catch (Exception ex){
+            } catch (Exception ex) {
 
             }
         }
