@@ -75,8 +75,7 @@
                         android:layout_height="@dimen/size32"
                         android:layout_gravity="center_horizontal"
 
-                        android:tag="ndDrawerImageViewEraser"
-                        android:background="#eeeeee" />
+                        android:tag="ndDrawerImageViewEraser" />
 
                 </LinearLayout>
 

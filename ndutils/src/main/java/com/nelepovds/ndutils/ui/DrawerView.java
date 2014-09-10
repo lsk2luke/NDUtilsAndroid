@@ -2,7 +2,9 @@ package com.nelepovds.ndutils.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Shader;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -75,6 +77,15 @@ public class DrawerView extends LinearLayout implements View.OnClickListener, Li
 
         this.createColors();
         this.updateLineParams();
+        this.makeEraserGradient();
+    }
+
+    private void makeEraserGradient() {
+        GradientDrawable border = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,new int[]{Color.RED,Color.WHITE, Color.GREEN});
+        border.setShape(GradientDrawable.OVAL);
+        //TODO: 2 - заменить на парамтер
+        border.setStroke((int) 2, Color.WHITE);
+        this.imageViewEraser.setImageDrawable(border);
     }
 
     @Override
