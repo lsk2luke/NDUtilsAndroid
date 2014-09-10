@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#000000">
+    android:background="#eeeeee">
 
     <TextView
         android:layout_width="fill_parent"
@@ -12,7 +12,7 @@
         android:id="@+id/textView"
         android:textSize="@dimen/size20"
         android:gravity="center"
-        android:textColor="@color/colorWhite" />
+        android:textColor="@color/colorBlack" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -33,9 +33,7 @@
         android:lines="1"
         android:maxLines="1"
         android:singleLine="true"
-        android:textColor="@color/colorWhite"
-        android:textColorHighlight="@color/colorLightGray"
-        android:textColorHint="@color/colorLightGray" />
+        android:textColor="@color/colorBlack" />
 
     <RelativeLayout
         android:layout_width="fill_parent"

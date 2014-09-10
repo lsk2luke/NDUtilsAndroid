@@ -6,12 +6,14 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.LinearGradient;
 import android.net.Uri;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import org.apache.http.HttpEntity;
@@ -290,5 +292,18 @@ public class CommonUtils {
                 new AlertDialog.Builder(activity).setTitle(title).setMessage(ex.getMessage()).show();
             }
         });
+    }
+
+    /**
+     TextView secondTextView = new TextView(this);
+     Shader textShader=new LinearGradient(0, 0, 0, 20,
+     new int[]{Color.GREEN,Color.BLUE},
+     new float[]{0, 1}, TileMode.CLAMP);
+     secondTextView.getPaint().setShader(textShader);
+     * @param textView
+     * @param gradient
+     */
+    public static void textViewGradient(TextView textView, LinearGradient gradient){
+        textView.getPaint().setShader(gradient);
     }
 }
