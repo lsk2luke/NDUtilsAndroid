@@ -9,12 +9,17 @@ import android.content.Intent;
 import android.graphics.LinearGradient;
 import android.net.Uri;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -199,15 +204,15 @@ public class CommonUtils {
         targetView.setAnimation(aa);
     }
 
-    public static void openUrl(String url,Activity activity) {
+    public static void openUrl(String url, Activity activity) {
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         activity.startActivity(i);
     }
 
-    public static void email(Activity activity,String email,String subject,String title){
+    public static void email(Activity activity, String email, String subject, String title) {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto",email, null));
+                "mailto", email, null));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
         activity.startActivity(Intent.createChooser(emailIntent, title));
     }
@@ -295,15 +300,34 @@ public class CommonUtils {
     }
 
     /**
-     TextView secondTextView = new TextView(this);
-     Shader textShader=new LinearGradient(0, 0, 0, 20,
-     new int[]{Color.GREEN,Color.BLUE},
-     new float[]{0, 1}, TileMode.CLAMP);
-     secondTextView.getPaint().setShader(textShader);
+     * TextView secondTextView = new TextView(this);
+     * Shader textShader=new LinearGradient(0, 0, 0, 20,
+     * new int[]{Color.GREEN,Color.BLUE},
+     * new float[]{0, 1}, TileMode.CLAMP);
+     * secondTextView.getPaint().setShader(textShader);
+     *
      * @param textView
      * @param gradient
      */
-    public static void textViewGradient(TextView textView, LinearGradient gradient){
+    public static void textViewGradient(TextView textView, LinearGradient gradient) {
         textView.getPaint().setShader(gradient);
     }
+
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
+    public static boolean checkPlayServices(Activity context) {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, context,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+            return false;
+        }
+        return true;
+    }
+
+
+
+
 }

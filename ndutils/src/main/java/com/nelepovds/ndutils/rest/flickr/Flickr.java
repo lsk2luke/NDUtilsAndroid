@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class Flickr extends RestApi {
 
-    public static final String FL_METHOD_PHOTOS_SEARCH = "?method=flickr.photos.search&api_key=%s&text=%s&per_page=20&format=json&nojsoncallback=1&per_page=%s";
+    public static final String FL_METHOD_PHOTOS_SEARCH = "?method=flickr.photos.search&api_key=%s&text=%s&per_page=20&format=json&nojsoncallback=1&per_page=%s&sort=relevance";
 
 
     private String flickrApiKey;

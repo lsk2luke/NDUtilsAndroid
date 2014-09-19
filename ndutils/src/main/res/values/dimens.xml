@@ -6,6 +6,7 @@
     <dimen name="size8">8dp</dimen>
     <dimen name="size10">10dp</dimen>
     <dimen name="size12">12dp</dimen>
+    <dimen name="size14">14dp</dimen>
     <dimen name="size16">16dp</dimen>
     <dimen name="size18">18dp</dimen>
     <dimen name="size20">20dp</dimen>
