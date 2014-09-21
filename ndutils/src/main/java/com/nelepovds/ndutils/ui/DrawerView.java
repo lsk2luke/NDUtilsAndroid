@@ -9,6 +9,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -78,6 +79,7 @@ public class DrawerView extends LinearLayout implements View.OnClickListener, Li
         this.createColors();
         this.updateLineParams();
         this.makeEraserGradient();
+
     }
 
     private void makeEraserGradient() {

@@ -6,11 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PointF;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Xfermode;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -18,14 +13,11 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.nelepovds.ndutils.CommonUtils;
-import com.nelepovds.ndutils.common.Cache;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 
 /**
@@ -42,8 +34,6 @@ public class FingerDrawView extends View {
     private Canvas drawCanvas;
     //canvas bitmap
     private Bitmap canvasBitmap;
-    //    http://stackoverflow.com/questions/11114625/android-canvas-redo-and-undo-operation
-//    private Bitmap undoBitmap;
     private int currentColor = 0xff000000;
     private int currentAlpha = 255;
     private int currentBackgroundColor = Color.WHITE;
@@ -123,11 +113,12 @@ public class FingerDrawView extends View {
                 return super.onFling(e1, e2, velocityX, velocityY);
             }
         });
+
     }
 
     private void makedSwipeRight() {
         if (this.historyDraw.size() > 1) {
-            Log.wtf("GO BACK","Reverse");
+            Log.wtf("GO BACK", "Reverse");
         }
     }
 
@@ -188,40 +179,34 @@ public class FingerDrawView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         float touchX = -1;
         float touchY = -1;
-        if (event.getPointerCount() == 2) {
-            drawPath.reset();
-            return this.gestureDetector.onTouchEvent(event);
-
-
-        } else {
-            touchX = event.getX();
-            touchY = event.getY();
-            //respond to down, move and up events
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    drawPath.moveTo(touchX, touchY);
-                    break;
-                case MotionEvent.ACTION_MOVE:
+        touchX = event.getX();
+        touchY = event.getY();
+        //respond to down, move and up events
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                drawPath.moveTo(touchX, touchY);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                drawPath.lineTo(touchX, touchY);
+                break;
+            case MotionEvent.ACTION_UP:
+                if (drawPath.isEmpty() == Boolean.FALSE) {
                     drawPath.lineTo(touchX, touchY);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    if (drawPath.isEmpty() == Boolean.FALSE) {
-                        drawPath.lineTo(touchX, touchY);
-                        drawCanvas.drawPath(drawPath, drawPaint);
-                        drawPath.reset();
-                        this.addDataToHistory();
-                    }
+                    drawCanvas.drawPath(drawPath, drawPaint);
+                    drawPath.reset();
+                    this.addDataToHistory();
+                }
 
-                    break;
-                default:
-                    return false;
-            }
-            //redraw
-            invalidate();
+                break;
+            default:
+                return false;
         }
+        //redraw
+        invalidate();
         return true;
 
     }
+
 
     private void addDataToHistory() {
         if (this.cacheDir != null) {

@@ -82,13 +82,13 @@ public class NDFlickrPhotoSearchDialog extends Dialog {
         });
         this.editTextFlickrPhotosSearch = (EditText) findViewById(R.id.editTextFlickrPhotosSearch);
         this.gridViewFlickPhotosSearch = (GridView) findViewById(R.id.gridViewFlickPhotosSearch);
-
-        this.editTextFlickrPhotosSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        this.editTextFlickrPhotosSearch.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
                     searchPicture(editTextFlickrPhotosSearch.getText().toString());
                 }
+                return false;
             }
         });
 
