@@ -32,10 +32,15 @@ public class BaseClass extends Model {
     @Column(name = "__object_server_state")
     public Integer __object_server_state = __OBJECT_STATE_CLIENT_SIDE;
 
-    public Boolean isServerObject(){
+    public Boolean isServerObject() {
         return this.__object_server_state == __OBJECT_STATE_SERVER_SIDE;
     }
 
+    public static Gson gsonAdapter() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.registerTypeHierarchyAdapter(BaseClass.class,new BaseClassAdapter()).setPrettyPrinting().create();
+        return gson;
+    }
 
     @Override
     public String toString() {
