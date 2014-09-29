@@ -11,6 +11,10 @@ import java.lang.reflect.Type;
 public class NDUIWidgetHelper {
 
     public static void initWidgets(Object target){
+        initWidgets(target, null);
+    }
+
+    public static void initWidgets(Object target,Object findViewTarget){
         Class[] types = { int.class };
 
         Field[] fields = target.getClass().getDeclaredFields();
@@ -21,10 +25,10 @@ public class NDUIWidgetHelper {
                 NDUIWidget uiWidget = oneField.getAnnotation(NDUIWidget.class);
                 int valueId = uiWidget.value();
                 try {
-                    Method method = target.getClass().getMethod("findViewById", types);
+                    Method method = (findViewTarget != null ? findViewTarget.getClass() : target.getClass()).getMethod("findViewById", types);
                     if (method != null) {
                         try {
-                            Object widgetValue = method.invoke(target,Integer.valueOf(valueId));
+                            Object widgetValue = method.invoke((findViewTarget != null ? findViewTarget : target),Integer.valueOf(valueId));
                             oneField.set(target, widgetValue);
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
