@@ -52,15 +52,19 @@ public class NDFlickrPhotoSearchDialog extends Dialog {
     public int widthItems;
     public int heightItems;
     public int per_page = 50;
+    private String preSearchText;
 
     private int placeHolderItems;
 
-    public NDFlickrPhotoSearchDialog(Context context, Flickr flickr, Picasso picasso, int placeHolderItems, INDFlickrPhotoSearchDialogListener listener) {
+    public NDFlickrPhotoSearchDialog(Context context, int mPerPage, Flickr flickr, Picasso picasso, int placeHolderItems, String searchText, INDFlickrPhotoSearchDialogListener listener) {
         super(context);
         this.flickr = flickr;
         this.picasso = picasso;
         this.placeHolderItems = placeHolderItems;
         this.listener = listener;
+        this.per_page = mPerPage;
+
+        this.preSearchText = searchText;
 
     }
 
@@ -97,7 +101,7 @@ public class NDFlickrPhotoSearchDialog extends Dialog {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (listener != null) {
-                    listener.selectPhoto(photosAdapter.getItem(position),editTextFlickrPhotosSearch.getText().toString());
+                    listener.selectPhoto(photosAdapter.getItem(position), editTextFlickrPhotosSearch.getText().toString());
                 }
                 dismiss();
             }
@@ -105,9 +109,18 @@ public class NDFlickrPhotoSearchDialog extends Dialog {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (this.preSearchText != null && preSearchText.length() > 0) {
+            this.editTextFlickrPhotosSearch.setText(this.preSearchText);
+            this.searchPicture(this.preSearchText);
+        }
+    }
+
     private void searchPicture(String textSearch) {
         this.progressBarFlickrSearch.setVisibility(View.VISIBLE);
-        this.flickr.photosSearch(getOwnerActivity(), textSearch,this.per_page, new RestApi.IRestApiListener() {
+        this.flickr.photosSearch(getOwnerActivity(), textSearch, this.per_page, new RestApi.IRestApiListener() {
             @Override
             public <RT extends BaseClass> void complete(String apiMethod, Select cache, RT retObject) {
                 loadImages((NDFlickrApi) retObject);

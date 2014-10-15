@@ -6,7 +6,16 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -46,6 +55,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class CommonUtils {
@@ -223,6 +233,14 @@ public class CommonUtils {
         activity.startActivity(intent);
     }
 
+    public static void share(Activity activity, String title, String shareMessage) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+        sendIntent.setType("text/plain");
+        activity.startActivity(Intent.createChooser(sendIntent, title));
+    }
+
 
     public static interface IDateTimeSetterListener {
         public void didSetNewDate(Button buttonDate, Calendar calendar);
@@ -327,7 +345,37 @@ public class CommonUtils {
         return true;
     }
 
+    public static boolean isIntentAvailable(Context context, String action) {
+        final PackageManager packageManager = context.getPackageManager();
+        final Intent intent = new Intent(action);
+        List<ResolveInfo> list =
+                packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return list.size() > 0;
+    }
 
 
+
+    //Examples
+    // http://android.okhelp.cz/drawbitmap-clippath-union-difference-intersect-replace-xor-android-example/
+    //
+    public static Bitmap imagesXOR(Bitmap bitmap1, Bitmap bitmap2){
+        Bitmap resultingImage=Bitmap.createBitmap(bitmap1.getWidth(), bitmap1.getHeight(), bitmap1.getConfig());
+        Canvas canvas = new Canvas(resultingImage);
+        Paint paint = new Paint();
+        canvas.drawBitmap(bitmap1, 0, 0, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+
+        paint.setAntiAlias(true);
+        paint.setFilterBitmap(true);
+        paint.setDither(true);
+
+        Rect src = new Rect(0,0,bitmap2.getWidth(), bitmap2.getHeight());
+        Rect dest = new Rect(0,0,bitmap1.getWidth(), bitmap1.getHeight());
+
+//        canvas.drawBitmap(bitmap2, 0, 0, paint);
+        canvas.drawBitmap(bitmap2, src, dest, paint);
+
+        return resultingImage;
+    }
 
 }

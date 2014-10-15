@@ -22,7 +22,6 @@ import com.nelepovds.ndutils.R;
 import java.io.File;
 
 
-
 /**
  * Created by dmitrynelepov on 11.09.14.
  */
@@ -59,7 +58,7 @@ public class DrawerView extends LinearLayout implements View.OnClickListener, Li
     }
 
     private void setupUI() {
-        inflate(getContext(), R.layout.nd_drawer_view,this);
+        inflate(getContext(), R.layout.nd_drawer_view, this);
         this.fingerDrawView = (FingerDrawView) findViewWithTag("ndDrawerFingerDrawView");
         //TODO: 4 - заменить на парамтер
         this.fingerDrawView.setCurrentStrokeWidth(4);
@@ -77,13 +76,23 @@ public class DrawerView extends LinearLayout implements View.OnClickListener, Li
         this.linearLayoutLineParams.setOnClickListener(this);
 
         this.createColors();
-        this.updateLineParams();
-        this.makeEraserGradient();
+        if (!isInEditMode()) {
+            this.updateLineParams();
+            this.makeEraserGradient();
+        }
 
     }
 
+    public File lastPicture() {
+        if (!this.fingerDrawView.historyDraw.isEmpty()) {
+            return this.fingerDrawView.historyDraw.get(0);
+        } else {
+            return null;
+        }
+    }
+
     private void makeEraserGradient() {
-        GradientDrawable border = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,new int[]{Color.RED,Color.WHITE, Color.GREEN});
+        GradientDrawable border = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[]{Color.RED, Color.WHITE, Color.GREEN});
         border.setShape(GradientDrawable.OVAL);
         //TODO: 2 - заменить на парамтер
         border.setStroke((int) 2, Color.WHITE);

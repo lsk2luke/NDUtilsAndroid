@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.internal.bind.DateTypeAdapter;
 import com.nelepovds.ndutils.CommonUtils;
 
 
@@ -38,7 +39,11 @@ public class BaseClass extends Model {
 
     public static Gson gsonAdapter() {
         GsonBuilder gsonBuilder = new GsonBuilder();
-        Gson gson = gsonBuilder.registerTypeHierarchyAdapter(BaseClass.class,new BaseClassAdapter()).setPrettyPrinting().create();
+        Gson gson = gsonBuilder
+                .registerTypeHierarchyAdapter(BaseClass.class,new BaseClassAdapter())
+                .setDateFormat(CommonUtils.DATE_FULL_FORMAT)
+                .setPrettyPrinting()
+                .create();
         return gson;
     }
 

@@ -75,9 +75,11 @@ public class FingerDrawView extends View {
 
     private void cleanUpCache() {
         //Clean up
-        for (File fileHistory : this.cacheDir.listFiles()) {
-            fileHistory.delete();
-            fileHistory.deleteOnExit();
+        if (this.cacheDir != null) {
+            for (File fileHistory : this.cacheDir.listFiles()) {
+                fileHistory.delete();
+                fileHistory.deleteOnExit();
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package com.nelepovds.ndutils.rest.flickr;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 import com.nelepovds.ndutils.rest.BaseClass;
 
@@ -35,6 +37,17 @@ public class NDFlickrPhoto {
     @SerializedName(value = "title")
     public String title;
 
+    public static String[] sizes = new String[]{
+            "Square", //small square 75x75
+            "Large Square", //large square 150x150
+            "Thumbnail", //thumbnail, 100 on longest side
+            "Small", //small, 240 on longest side
+            "Small 320", //small, 320 on longest side
+            "Medium", //medium, 500 on longest side
+            "Large", //medium 640, 640 on longest side
+            "Original", //medium 800, 800 on longest side†
+    };
+
     //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}_[mstzb].jpg
     public static final String ND_FLICKR_IMAGE_URL_SIZES = "https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}_[mstzb].jpg";
     //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{o-secret}_o.(jpg|gif|png)
@@ -69,7 +82,16 @@ public class NDFlickrPhoto {
                     .replaceFirst("\\{secret\\}", this.secret)
                     .replaceFirst("\\[mstzb\\]", size);
         }
-
+        Log.wtf("FLICKR:", completeStr);
         return completeStr;
+    }
+
+    public static class NDFlickrPhotoSize extends BaseClass {
+        public String label;
+        public Integer height;
+        public Integer width;
+        public String source;
+        public String media;
+        public String url;
     }
 }

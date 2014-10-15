@@ -4,4 +4,5 @@
     <color name="colorLightGray">#aaaaaa</color>
     <color name="colorActionBar">#eeffffff</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorWhiteHint">#66ffffff</color>
 </resources>
