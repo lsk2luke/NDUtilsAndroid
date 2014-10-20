@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_hue">Тон</string>
-    <string name="title_saturation">Насыщенность</string>
-    <string name="title_value">Значение</string>
-    <string name="title_select_color">Выбрать цвет</string>
-    <string name="label_eraser">Ластик</string>
-    <string name="label_width">Толщина</string>
-    <string name="label_line">Линия</string>
-    <string name="label_alpha">Прозрачность</string>
-    <string name="title_apply_line_param">Применить параметры линии</string>
+    <string name="title_hue">тон</string>
+    <string name="title_saturation">насыщенность</string>
+    <string name="title_value">значение</string>
+    <string name="title_select_color">выбрать цвет</string>
+    <string name="label_eraser">ластик</string>
+    <string name="label_width">толщина</string>
+    <string name="label_line">линия</string>
+    <string name="label_alpha">прозрачность</string>
+    <string name="title_apply_line_param">ВЫБРАТЬ ЭТИ ПАРАМЕТРЫ</string>
+    <string name="title_dialog_color_params">Параметры цвета</string>
+    <string name="dialog_title_line_params">Параметры линии</string>
 </resources>

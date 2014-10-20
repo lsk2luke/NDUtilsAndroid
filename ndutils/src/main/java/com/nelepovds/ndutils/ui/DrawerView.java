@@ -92,11 +92,11 @@ public class DrawerView extends LinearLayout implements View.OnClickListener, Li
     }
 
     private void makeEraserGradient() {
-        GradientDrawable border = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[]{Color.RED, Color.WHITE, Color.GREEN});
-        border.setShape(GradientDrawable.OVAL);
-        //TODO: 2 - заменить на парамтер
-        border.setStroke((int) 2, Color.WHITE);
-        this.imageViewEraser.setImageDrawable(border);
+//        GradientDrawable border = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[]{Color.RED, Color.WHITE, Color.GREEN});
+//        border.setShape(GradientDrawable.OVAL);
+//        //TODO: 2 - заменить на парамтер
+//        border.setStroke((int) 2, Color.WHITE);
+//        this.imageViewEraser.setImageDrawable(border);
     }
 
     @Override

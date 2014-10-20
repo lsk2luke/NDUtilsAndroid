@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="@dimen/size8">
+    android:background="#aa000000">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -21,6 +21,42 @@
                 android:layout_height="fill_parent"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="@dimen/size16">
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:id="@+id/relativeLayoutLineSize">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_alignParentBottom="false"
+                        android:layout_centerVertical="true"
+                        android:paddingTop="@dimen/size256">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="New Text"
+                            android:id="@+id/textViewDialogLineWidth"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="@dimen/size40"
+                            android:gravity="center"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_width"
+                            android:id="@+id/textView2"
+                            android:textSize="@dimen/size16"
+                            android:gravity="center"
+                            android:textColor="@color/colorWhite" />
+                    </LinearLayout>
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
@@ -44,7 +80,7 @@
                             android:text="New Text"
                             android:id="@+id/textViewDialogLineAlpha"
                             android:textColor="@color/colorWhite"
-                            android:textSize="@dimen/size32"
+                            android:textSize="@dimen/size40"
                             android:gravity="center"
                             android:textStyle="bold" />
 
@@ -53,42 +89,6 @@
                             android:layout_height="wrap_content"
                             android:text="@string/label_alpha"
                             android:id="@+id/textView4"
-                            android:textSize="@dimen/size16"
-                            android:gravity="center"
-                            android:textColor="@color/colorWhite" />
-                    </LinearLayout>
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:id="@+id/relativeLayoutLineSize">
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_alignParentBottom="false"
-                        android:layout_centerVertical="true"
-                        android:paddingTop="@dimen/size256">
-
-                        <TextView
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:text="New Text"
-                            android:id="@+id/textViewDialogLineWidth"
-                            android:textColor="@color/colorWhite"
-                            android:textSize="@dimen/size32"
-                            android:gravity="center"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/label_width"
-                            android:id="@+id/textView2"
                             android:textSize="@dimen/size16"
                             android:gravity="center"
                             android:textColor="@color/colorWhite" />
@@ -126,6 +126,17 @@
                 android:id="@+id/imageViewLinePreview"
                 android:layout_centerInParent="true" />
         </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_title_line_params"
+            android:id="@+id/textView"
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold"
+            android:textSize="@dimen/size32"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/size16" />
     </RelativeLayout>
 
 </LinearLayout>

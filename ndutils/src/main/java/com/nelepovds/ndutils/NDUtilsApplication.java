@@ -119,6 +119,16 @@ public class NDUtilsApplication extends Application {
         }
     }
 
+    public String getAppVersionName(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+
     public static interface IGCMRegisterListener {
 
         public void registerSuccess(String regid);

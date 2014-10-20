@@ -16,12 +16,17 @@
     <dimen name="size28">28dp</dimen>
     <dimen name="size30">30dp</dimen>
     <dimen name="size32">32dp</dimen>
-    <dimen name="size64">64dp</dimen>
-    <dimen name="size128">128dp</dimen>
-    <dimen name="size192">192dp</dimen>
     <dimen name="size40">40dp</dimen>
     <dimen name="size48">48dp</dimen>
-    <dimen name="size256">256dp</dimen>
-    <dimen name="size136">136dp</dimen>
+    <dimen name="size60">60dp</dimen>
+    <dimen name="size62">62dp</dimen>
+    <dimen name="size64">64dp</dimen>
+    <dimen name="size72">72dp</dimen>
     <dimen name="size96">96dp</dimen>
+    <dimen name="size128">128dp</dimen>
+    <dimen name="size136">136dp</dimen>
+    <dimen name="size144">144dp</dimen>
+    <dimen name="size152">152dp</dimen>
+    <dimen name="size192">192dp</dimen>
+    <dimen name="size256">256dp</dimen>
 </resources>

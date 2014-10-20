@@ -111,7 +111,7 @@ public class ColorChoiserDialog extends AlertDialog implements View.OnTouchListe
         GradientDrawable border = new GradientDrawable();
         border.setColor(Color.TRANSPARENT);
         border.setShape(GradientDrawable.OVAL);
-        border.setStroke((int) getContext().getResources().getDimension(R.dimen.size4), Color.WHITE);
+        border.setStroke(borderWidth, Color.WHITE);
         border.setSize(size + borderWidth, size + borderWidth);
         this.relativeLayoutVS.setBackgroundDrawable(border);
     }

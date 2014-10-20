@@ -2,8 +2,8 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent" android:layout_height="fill_parent"
-    android:padding="@dimen/size8"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#aa000000">
 
     <RelativeLayout
     android:layout_width="fill_parent"
@@ -52,7 +52,7 @@
                         android:id="@+id/textViewFirstColorPart"
                         android:gravity="center"
                         android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/size32"
+                        android:textSize="@dimen/size40"
                         android:textStyle="bold" />
 
                     <TextView
@@ -79,7 +79,7 @@
                         android:id="@+id/textViewSecondColorPart"
                         android:gravity="center"
                         android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/size32"
+                        android:textSize="@dimen/size40"
                         android:textStyle="bold" />
 
                     <TextView
@@ -106,7 +106,7 @@
                         android:id="@+id/textViewThirdColorPart"
                         android:gravity="center"
                         android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/size32"
+                        android:textSize="@dimen/size40"
                         android:textStyle="bold" />
 
                     <TextView
@@ -132,6 +132,17 @@
             android:textColor="@color/colorBlack"
             android:textStyle="bold"
             android:textSize="@dimen/size16" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_dialog_color_params"
+            android:id="@+id/textView"
+            android:layout_marginTop="@dimen/size16"
+            android:gravity="center"
+            android:textSize="@dimen/size32"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite" />
 
     </RelativeLayout>
 

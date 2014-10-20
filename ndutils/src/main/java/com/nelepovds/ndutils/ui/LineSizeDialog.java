@@ -96,8 +96,6 @@ public class LineSizeDialog extends AlertDialog implements View.OnClickListener,
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.imageViewLinePreview.getLayoutParams();
             layoutParams.width = layoutParams.height = this.lineSize * 2;
             this.imageViewLinePreview.setLayoutParams(layoutParams);
-
-
             this.imageViewLinePreview.setImageResource(0);
             //Update line params
             GradientDrawable circle = new GradientDrawable();
@@ -109,7 +107,7 @@ public class LineSizeDialog extends AlertDialog implements View.OnClickListener,
             GradientDrawable border = new GradientDrawable();
             border.setColor(Color.TRANSPARENT);
             border.setShape(GradientDrawable.OVAL);
-            border.setStroke((int) getContext().getResources().getDimension(R.dimen.size2), Color.WHITE);
+            border.setStroke((int) getContext().getResources().getDimension(R.dimen.size8), Color.WHITE);
             border.setSize(this.maxSize, this.maxSize);
             this.relativeLayoutLineSizeHolder.setBackgroundDrawable(border);
 
