@@ -14,4 +14,6 @@ public @interface NDUIWidget {
 
     public int value();
 
+    public String textTypeFace() default "";
+    public int textTypeFaceStyle() default 0;
 }
