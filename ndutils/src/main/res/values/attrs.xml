@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="NDUIWidget">
+        <attr name="fontFace" format="string"/>
+        <attr name="fontFaceStyle" format="integer"/>
+    </declare-styleable>
+
+</resources>

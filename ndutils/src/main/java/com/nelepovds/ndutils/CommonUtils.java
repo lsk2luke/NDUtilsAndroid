@@ -354,12 +354,11 @@ public class CommonUtils {
     }
 
 
-
     //Examples
     // http://android.okhelp.cz/drawbitmap-clippath-union-difference-intersect-replace-xor-android-example/
     //
-    public static Bitmap imagesXOR(Bitmap bitmap1, Bitmap bitmap2){
-        Bitmap resultingImage=Bitmap.createBitmap(bitmap1.getWidth(), bitmap1.getHeight(), bitmap1.getConfig());
+    public static Bitmap imagesXOR(Bitmap bitmap1, Bitmap bitmap2) {
+        Bitmap resultingImage = Bitmap.createBitmap(bitmap1.getWidth(), bitmap1.getHeight(), bitmap1.getConfig());
         Canvas canvas = new Canvas(resultingImage);
         Paint paint = new Paint();
         canvas.drawBitmap(bitmap1, 0, 0, paint);
@@ -369,13 +368,17 @@ public class CommonUtils {
         paint.setFilterBitmap(true);
         paint.setDither(true);
 
-        Rect src = new Rect(0,0,bitmap2.getWidth(), bitmap2.getHeight());
-        Rect dest = new Rect(0,0,bitmap1.getWidth(), bitmap1.getHeight());
+        Rect src = new Rect(0, 0, bitmap2.getWidth(), bitmap2.getHeight());
+        Rect dest = new Rect(0, 0, bitmap1.getWidth(), bitmap1.getHeight());
 
 //        canvas.drawBitmap(bitmap2, 0, 0, paint);
         canvas.drawBitmap(bitmap2, src, dest, paint);
 
         return resultingImage;
+    }
+
+    public static Boolean checkEmail(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
 }
