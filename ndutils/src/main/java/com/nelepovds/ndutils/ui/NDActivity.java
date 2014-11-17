@@ -3,6 +3,7 @@ package com.nelepovds.ndutils.ui;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.View;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -44,5 +45,9 @@ public class NDActivity extends Activity {
             this.progressDialog.dismiss();
             this.progressDialog = null;
         }
+    }
+
+    public View getContentView() {
+        return getWindow().getDecorView().findViewById(android.R.id.content);
     }
 }
