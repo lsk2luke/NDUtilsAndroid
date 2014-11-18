@@ -19,6 +19,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
@@ -378,7 +379,15 @@ public class CommonUtils {
     }
 
     public static Boolean checkEmail(String email) {
+        if ((email == null) || (email.length() == 0))
+            return false;
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    public static boolean checkMobilePhone(String phone) {
+        if ((phone == null) || (phone.length() == 0))
+            return false;
+        return Patterns.PHONE.matcher(phone).matches();
     }
 
 }
