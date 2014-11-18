@@ -381,13 +381,13 @@ public class CommonUtils {
     public static Boolean checkEmail(String email) {
         if ((email == null) || (email.length() == 0))
             return false;
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches();
     }
 
     public static boolean checkMobilePhone(String phone) {
         if ((phone == null) || (phone.length() == 0))
             return false;
-        return Patterns.PHONE.matcher(phone).matches();
+        return Patterns.PHONE.matcher(phone.trim()).matches();
     }
 
 }
