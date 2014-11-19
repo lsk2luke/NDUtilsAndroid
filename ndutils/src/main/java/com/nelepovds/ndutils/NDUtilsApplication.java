@@ -1,6 +1,5 @@
 package com.nelepovds.ndutils;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -157,5 +156,17 @@ public class NDUtilsApplication extends Application {
             registerListener.registerLoaded(storedRegId);
         }
     }
+
+    public String getStringIdByName(String aString, Object... arguments) {
+        String packageName = getPackageName();
+        int resId = getResources()
+                .getIdentifier(aString, "string", packageName);
+        if (resId == 0) {
+            return aString;
+        } else {
+            return getString(resId, arguments);
+        }
+    }
+
 }
 
