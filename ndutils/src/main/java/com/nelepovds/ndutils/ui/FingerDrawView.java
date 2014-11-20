@@ -2,6 +2,7 @@ package com.nelepovds.ndutils.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -98,34 +99,23 @@ public class FingerDrawView extends View {
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
         drawPaint.setAlpha(this.currentAlpha);
         canvasPaint = new Paint(Paint.DITHER_FLAG);
-
-        this.gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                String swipe = "";
-                float sensitvity = 50;
-
-                if ((e1.getX() - e2.getX()) > sensitvity) {
-                    makedSwipeLeft();
-                } else if ((e2.getX() - e1.getX()) > sensitvity) {
-                    makedSwipeRight();
-                }
-
-                return super.onFling(e1, e2, velocityX, velocityY);
-            }
-        });
-
     }
 
-    private void makedSwipeRight() {
+    public void historyBack() {
         if (this.historyDraw.size() > 1) {
-            Log.wtf("GO BACK", "Reverse");
+            this.historyDraw.remove(0);
+            File last = this.historyDraw.get(0);
+            this.setCurrentDrawState(BitmapFactory.decodeFile(last.getAbsolutePath()));
+        } else {
+            this.clearAll();
         }
     }
 
-    private void makedSwipeLeft() {
-
+    private void clearAll() {
+        this.historyDraw.clear();
+        Bitmap tempEmpty = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        tempEmpty.eraseColor(this.currentBackgroundColor);
+        this.setCurrentDrawState(tempEmpty);
     }
 
     //size assigned to view
@@ -148,6 +138,7 @@ public class FingerDrawView extends View {
     public void setCurrentDrawState(Bitmap bmp) {
         this.canvasBitmap = bmp.copy(Bitmap.Config.ARGB_8888, true);
         this.drawCanvas = new Canvas(this.canvasBitmap);
+        this.drawPath.reset();
         invalidate();
     }
 
@@ -212,11 +203,13 @@ public class FingerDrawView extends View {
 
     private void addDataToHistory() {
         if (this.cacheDir != null) {
+            Bitmap saveBitmap = Bitmap.createBitmap(canvasBitmap);
+
             String dateTimeFile = CommonUtils.formatDate(new Date(), CommonUtils.DATE_FULL_FORMAT_FILE_SAVE);
             String fileNameSave = "TempFingerDraw_" + dateTimeFile + ".png";
             File cacheTempImage = new File(this.cacheDir, fileNameSave);
             try {
-                if (canvasBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(cacheTempImage))) {
+                if (saveBitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(cacheTempImage))) {
                     this.historyDraw.add(0, cacheTempImage);
                     if (this.historyDraw.size() > this.historySize) {
                         this.historyDraw.remove(this.historyDraw.size() - 1);
