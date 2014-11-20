@@ -33,6 +33,17 @@ public class NDActivity extends Activity {
         return this;
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.hideProgressDialog();
+    }
+
+    public void showProgressDialog(int title, int message) {
+        this.showProgressDialog(getString(title), getString(message));
+    }
+
     public void showProgressDialog(String title, String message) {
         this.progressDialog = new ProgressDialog(this);
         this.progressDialog.setTitle(title);
@@ -41,7 +52,7 @@ public class NDActivity extends Activity {
     }
 
     public void hideProgressDialog() {
-        if (this.progressDialog != null) {
+        if (this.progressDialog != null && this.progressDialog.isShowing()) {
             this.progressDialog.dismiss();
             this.progressDialog = null;
         }
@@ -50,4 +61,6 @@ public class NDActivity extends Activity {
     public View getContentView() {
         return getWindow().getDecorView().findViewById(android.R.id.content);
     }
+
+
 }
