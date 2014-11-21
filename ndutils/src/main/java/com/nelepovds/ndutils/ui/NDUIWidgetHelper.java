@@ -1,15 +1,11 @@
 package com.nelepovds.ndutils.ui;
 
-import android.content.Context;
 import android.graphics.Typeface;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 
 /**
  * Created by dmitrynelepov on 26.09.14.
@@ -22,7 +18,12 @@ public class NDUIWidgetHelper {
 
     public static void initWidgets(Object target, Object findViewTarget) {
         Class[] types = {int.class};
-        Field[] fields = target.getClass().getDeclaredFields();
+        Field[] f1 = target.getClass().getFields();
+        Field[] f2 = target.getClass().getDeclaredFields();
+        Field[] fields= new Field[f1.length+f2.length];
+        System.arraycopy(f1, 0, fields, 0, f1.length);
+        System.arraycopy(f2, 0, fields, f1.length, f2.length);
+
         for (Field oneField : fields) {
             if (oneField.isAnnotationPresent(NDUIWidget.class)) {
                 Boolean isAccessible = oneField.isAccessible();

@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -105,9 +104,9 @@ public class FingerDrawView extends View {
         if (this.historyDraw.size() > 1) {
             this.historyDraw.remove(0);
             File last = this.historyDraw.get(0);
-            this.setCurrentDrawState(BitmapFactory.decodeFile(last.getAbsolutePath()));
+            this.setCurrentDrawState(BitmapFactory.decodeFile(last.getAbsolutePath()), false);
         } else {
-            this.clearAll();
+//            this.clearAll();
         }
     }
 
@@ -115,7 +114,7 @@ public class FingerDrawView extends View {
         this.historyDraw.clear();
         Bitmap tempEmpty = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         tempEmpty.eraseColor(this.currentBackgroundColor);
-        this.setCurrentDrawState(tempEmpty);
+        this.setCurrentDrawState(tempEmpty, false);
     }
 
     //size assigned to view
@@ -135,10 +134,13 @@ public class FingerDrawView extends View {
         }
     }
 
-    public void setCurrentDrawState(Bitmap bmp) {
+    public void setCurrentDrawState(Bitmap bmp, boolean addToHistory) {
         this.canvasBitmap = bmp.copy(Bitmap.Config.ARGB_8888, true);
         this.drawCanvas = new Canvas(this.canvasBitmap);
         this.drawPath.reset();
+        if (addToHistory) {
+            this.addDataToHistory();
+        }
         invalidate();
     }
 
@@ -203,7 +205,7 @@ public class FingerDrawView extends View {
 
     private void addDataToHistory() {
         if (this.cacheDir != null) {
-            Bitmap saveBitmap = Bitmap.createBitmap(canvasBitmap);
+            Bitmap saveBitmap = canvasBitmap.copy(Bitmap.Config.ARGB_8888, false);
 
             String dateTimeFile = CommonUtils.formatDate(new Date(), CommonUtils.DATE_FULL_FORMAT_FILE_SAVE);
             String fileNameSave = "TempFingerDraw_" + dateTimeFile + ".png";
