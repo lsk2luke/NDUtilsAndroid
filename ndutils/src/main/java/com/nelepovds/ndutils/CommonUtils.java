@@ -1,5 +1,7 @@
 package com.nelepovds.ndutils;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -54,6 +56,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -240,6 +243,20 @@ public class CommonUtils {
         sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
         sendIntent.setType("text/plain");
         activity.startActivity(Intent.createChooser(sendIntent, title));
+    }
+
+    public static ArrayList<Account> deviceAccountsList(Context context) {
+
+            AccountManager manager = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
+            Account[] list = manager.getAccounts();
+            ArrayList<Account> accounts = new ArrayList<Account>();
+            for (Account account : list) {
+                if (account.type.contains("com.google")) {
+                    accounts.add(account);
+                }
+            }
+            return accounts;
+
     }
 
 
