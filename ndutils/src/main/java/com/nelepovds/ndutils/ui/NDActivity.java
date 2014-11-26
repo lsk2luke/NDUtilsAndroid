@@ -5,11 +5,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
  * Created by dmitrynelepov on 26.09.14.
  */
@@ -62,5 +57,18 @@ public class NDActivity extends Activity {
         return getWindow().getDecorView().findViewById(android.R.id.content);
     }
 
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (item.getItemId() == android.R.id.home) {
+//            this.clickHomeButton();
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//
+//    protected void clickHomeButton() {
+//        finish();
+//    }
 
 }
