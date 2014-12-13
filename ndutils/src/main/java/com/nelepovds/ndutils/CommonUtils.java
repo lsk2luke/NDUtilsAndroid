@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
@@ -19,8 +18,9 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -31,7 +31,6 @@ import android.widget.TimePicker;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -407,4 +406,21 @@ public class CommonUtils {
         return Patterns.PHONE.matcher(phone.trim()).matches();
     }
 
+
+    public static String getDeviceId(Context ctx)
+    {
+        TelephonyManager tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
+
+        String tmDevice = tm.getDeviceId();
+        String androidId = Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String serial = null;
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) serial = Build.SERIAL;
+
+        if(tmDevice != null) return "01" + tmDevice;
+        if(androidId != null) return "02" + androidId;
+        if(serial != null) return "03" + serial;
+        // other alternatives (i.e. Wi-Fi MAC, Bluetooth MAC, etc.)
+
+        return null;
+    }
 }
