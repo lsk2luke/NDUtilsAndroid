@@ -15,10 +15,13 @@ import retrofit.converter.GsonConverter;
 public abstract class NDRestBaseAPI<T> {
 
 
+    public static final Integer ND_OFFSET_BASE_LIMIT = 25;
     protected final RestAdapter adapter;
     public final T service;
 
     protected abstract String getWatcherID();
+
+
 
 
     public NDRestBaseAPI(String endPoint, Class<T>  restInterfaceClass){
