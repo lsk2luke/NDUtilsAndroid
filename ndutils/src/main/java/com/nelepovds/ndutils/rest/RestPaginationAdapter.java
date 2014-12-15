@@ -23,12 +23,22 @@ import retrofit.client.Response;
  */
 public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAdapter implements IRestPagination {
 
+    public static interface IRestPaginationAdapterListener {
+
+        View getView(Object item, View convertView, ViewGroup parent);
+
+        void beginLoading();
+
+        void completeLoading();
+    }
+
     protected NDRestBaseAPI restBaseAPI;
 
     protected Integer offset = 0;
     protected Integer limit = NDRestBaseAPI.ND_OFFSET_BASE_LIMIT;
     protected Integer total = 0;
 
+    protected IRestPaginationAdapterListener restPaginationAdapterListener;
 
     protected HashMap<String, Object> getAdditionalParams() {
         HashMap<String, Object> retParams = new HashMap<>();
@@ -55,7 +65,15 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
     }
 
     @Override
+    public T getItem(int position) {
+        return null;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        if (restPaginationAdapterListener != null) {
+            return restPaginationAdapterListener.getView(this.getItem(position), convertView, parent);
+        }
         TextView retDefaultView = new TextView(context);
         Object item = this.getItem(position);
         retDefaultView.setText(item.toString());
@@ -86,6 +104,9 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
 
     @Override
     public void performLoading() {
+        if (this.restPaginationAdapterListener!=null){
+            this.restPaginationAdapterListener.beginLoading();
+        }
         try {
             Method pagination = restBaseAPI.service.getClass().getMethod("pagination", new Class[]{String.class, HashMap.class, Callback.class});
             pagination.invoke(restBaseAPI.service, this.getPathPagination(), this.getAdditionalParams(), new Callback<NDResultData>() {
@@ -127,6 +148,9 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
 
     @Override
     public void updateUI(NDResultData resultData) {
+        if (this.restPaginationAdapterListener !=null) {
+            this.restPaginationAdapterListener.completeLoading();
+        }
         this.offset = resultData.offset;
         this.total = resultData.total;
         this.limit = resultData.limit;
@@ -139,5 +163,9 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
 //        if (this.listener != null) {
 //            this.listener.completePartOfDataLoading(hasMore, gridViewArtWorksAdapter.getCount(), resultData.total);
 //        }
+    }
+
+    public void setRestPaginationAdapterListener(IRestPaginationAdapterListener restPaginationAdapterListener) {
+        this.restPaginationAdapterListener = restPaginationAdapterListener;
     }
 }
