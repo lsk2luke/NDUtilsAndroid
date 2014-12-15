@@ -1,6 +1,7 @@
 package com.nelepovds.ndutils.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +13,7 @@ public class NDActivity extends Activity {
 
 
     protected ProgressDialog progressDialog;
+    protected AlertDialog alertDialog;
 
     protected void onCreate(Bundle savedInstanceState, int layoutId) {
         super.onCreate(savedInstanceState);
@@ -51,6 +53,14 @@ public class NDActivity extends Activity {
             this.progressDialog.dismiss();
             this.progressDialog = null;
         }
+    }
+
+    public void showAlertDialog(int title, int message) {
+        if (this.alertDialog != null) {
+            this.alertDialog.dismiss();
+        }
+        this.alertDialog = new AlertDialog.Builder(this).setTitle(title).setMessage(message).create();
+        this.alertDialog.show();
     }
 
     public View getContentView() {

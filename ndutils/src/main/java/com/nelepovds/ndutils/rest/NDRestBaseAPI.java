@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.squareup.okhttp.OkHttpClient;
 
+import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
@@ -50,5 +51,6 @@ public abstract class NDRestBaseAPI<T> {
                 .build();
         this.service = this.adapter.create(restInterfaceClass);
     }
+
 
 }
