@@ -1,18 +1,22 @@
 package com.nelepovds.ndutils.rest;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.activeandroid.Cache;
+import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.nelepovds.ndutils.R;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -22,6 +26,9 @@ import retrofit.client.Response;
  * Created by Administrator on 14.12.14.
  */
 public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAdapter implements IRestPagination {
+
+    public static final String REST_PAGER_LIMIT = "limit";
+    public static final String REST_PAGER_OFFSET = "offset";
 
     public static interface IRestPaginationAdapterListener {
 
@@ -42,8 +49,8 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
 
     protected HashMap<String, Object> getAdditionalParams() {
         HashMap<String, Object> retParams = new HashMap<>();
-        retParams.put("offset", this.offset);
-        retParams.put("limit", this.limit);
+        retParams.put(REST_PAGER_OFFSET, this.offset);
+        retParams.put(REST_PAGER_LIMIT, this.limit);
         return retParams;
     }
 
@@ -53,10 +60,39 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
 
     protected Context context;
 
+    protected Cursor resultCursor;
 
     public RestPaginationAdapter(NDRestBaseAPI restBaseAPI, Context context) {
         this.restBaseAPI = restBaseAPI;
         this.context = context;
+        this.createCursor();
+    }
+
+    public void createCursor() {
+        From query = new Select().from(getClassObject());
+        HashMap<String, Object> params = this.getAdditionalParams();
+        Iterator<String> keys = params.keySet().iterator();
+        String[] sqlParams = new String[params.size() - 2];
+        int index = 0;
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (!key.equalsIgnoreCase(REST_PAGER_LIMIT) && !key.equalsIgnoreCase(REST_PAGER_OFFSET)) {
+                Object value = params.get(key);
+                String paramKey = String.format("%s = ?", key);
+                query = query.where(paramKey, value);
+                sqlParams[index] = value.toString();
+                index++;
+            }
+        }
+
+        String sql = query.toSql();
+        sql += String.format(" LIMIT %s,%s", String.valueOf(this.offset), String.valueOf(this.limit));
+        this.resultCursor = Cache.openDatabase().rawQuery(sql, sqlParams);
+    }
+
+    @Override
+    public int getCount() {
+        return this.resultCursor.getCount();
     }
 
     @Override
@@ -66,7 +102,17 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
 
     @Override
     public T getItem(int position) {
-        return null;
+        T item = null;
+        this.resultCursor.moveToPosition(position);
+        try {
+            item = (T) getClassObject().newInstance();
+            item.loadFromCursor(this.resultCursor);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return item;
     }
 
     @Override
@@ -104,7 +150,7 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
 
     @Override
     public void performLoading() {
-        if (this.restPaginationAdapterListener!=null){
+        if (this.restPaginationAdapterListener != null) {
             this.restPaginationAdapterListener.beginLoading();
         }
         try {
@@ -116,7 +162,7 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
                     if (resultData != null) {
                         for (Object object : resultData.data) {
                             T objClass = (T) BaseClass.fromJsonTreeMap(object, getClassObject(), new Select());
-                            parsedOneObject(objClass);
+//                            parsedOneObject(objClass);
                         }
                     } else {
                         Log.wtf("Error", "Error");
@@ -136,7 +182,6 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-
     }
 
     protected abstract void parsedOneObject(T objectClass);
@@ -148,21 +193,15 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
 
     @Override
     public void updateUI(NDResultData resultData) {
-        if (this.restPaginationAdapterListener !=null) {
+        if (this.restPaginationAdapterListener != null) {
             this.restPaginationAdapterListener.completeLoading();
         }
-        this.offset = resultData.offset;
-        this.total = resultData.total;
-        this.limit = resultData.limit;
+        if (resultData != null) {
+            this.offset = resultData.offset;
+            this.total = resultData.total;
+            this.limit = resultData.limit;
+        }
         this.notifyDataSetChanged();
-//        this.setNumColumns(gridViewArtWorksAdapter.getCount() <= 3 ? 1 : 3);
-//        gridViewArtWorksAdapter.notifyDataSetChanged();
-//        setShowLoading(false);
-//        Boolean hasMore = this.offset + this.limit < this.total;
-//        setShowMore(hasMore);
-//        if (this.listener != null) {
-//            this.listener.completePartOfDataLoading(hasMore, gridViewArtWorksAdapter.getCount(), resultData.total);
-//        }
     }
 
     public void setRestPaginationAdapterListener(IRestPaginationAdapterListener restPaginationAdapterListener) {
