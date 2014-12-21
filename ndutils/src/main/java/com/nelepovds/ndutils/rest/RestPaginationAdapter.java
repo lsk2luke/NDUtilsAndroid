@@ -37,6 +37,8 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
         void beginLoading();
 
         void completeLoading();
+
+        void errorLoading(RetrofitError retrofitError);
     }
 
     protected NDRestBaseAPI restBaseAPI;
@@ -69,7 +71,31 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
     }
 
     public void createCursor() {
+        From query = this.getSQLSelection();
+        String[] sqlParams = this.getSQLParams();
+
+        String sql = query.toSql();
+        sql += String.format(" LIMIT %s,%s", String.valueOf(this.offset), String.valueOf(this.limit));
+        this.resultCursor = Cache.openDatabase().rawQuery(sql, sqlParams);
+    }
+
+    protected From getSQLSelection() {
         From query = new Select().from(getClassObject());
+        HashMap<String, Object> params = this.getAdditionalParams();
+        Iterator<String> keys = params.keySet().iterator();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (!key.equalsIgnoreCase(REST_PAGER_LIMIT) && !key.equalsIgnoreCase(REST_PAGER_OFFSET)) {
+                Object value = params.get(key);
+                String paramKey = String.format("%s = ?", key);
+                query = query.where(paramKey, value);
+            }
+        }
+
+        return query;
+    }
+
+    protected String[] getSQLParams() {
         HashMap<String, Object> params = this.getAdditionalParams();
         Iterator<String> keys = params.keySet().iterator();
         String[] sqlParams = new String[params.size() - 2];
@@ -78,16 +104,11 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
             String key = keys.next();
             if (!key.equalsIgnoreCase(REST_PAGER_LIMIT) && !key.equalsIgnoreCase(REST_PAGER_OFFSET)) {
                 Object value = params.get(key);
-                String paramKey = String.format("%s = ?", key);
-                query = query.where(paramKey, value);
                 sqlParams[index] = value.toString();
                 index++;
             }
         }
-
-        String sql = query.toSql();
-        sql += String.format(" LIMIT %s,%s", String.valueOf(this.offset), String.valueOf(this.limit));
-        this.resultCursor = Cache.openDatabase().rawQuery(sql, sqlParams);
+        return sqlParams;
     }
 
     @Override
@@ -132,6 +153,7 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
     public void resetLoading() {
         this.limit = NDRestBaseAPI.ND_OFFSET_BASE_LIMIT;
         this.offset = 0;
+        this.createCursor();
 
         this.performLoading();
     }
@@ -162,7 +184,6 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
                     if (resultData != null) {
                         for (Object object : resultData.data) {
                             T objClass = (T) BaseClass.fromJsonTreeMap(object, getClassObject(), new Select());
-//                            parsedOneObject(objClass);
                         }
                     } else {
                         Log.wtf("Error", "Error");
@@ -184,11 +205,11 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
         }
     }
 
-    protected abstract void parsedOneObject(T objectClass);
-
     @Override
     public void errorLoading(RetrofitError retrofitError) {
-        Log.wtf("Error", "loading");
+        if (this.restPaginationAdapterListener != null) {
+            this.restPaginationAdapterListener.errorLoading(retrofitError);
+        }
     }
 
     @Override
@@ -201,6 +222,7 @@ public abstract class RestPaginationAdapter<T extends BaseClass> extends BaseAda
             this.total = resultData.total;
             this.limit = resultData.limit;
         }
+        this.resultCursor.requery();
         this.notifyDataSetChanged();
     }
 

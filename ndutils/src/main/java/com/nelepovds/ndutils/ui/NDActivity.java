@@ -55,30 +55,18 @@ public class NDActivity extends Activity {
         }
     }
 
-    public void showAlertDialog(int title, int message) {
+    public AlertDialog showAlertDialog(int title, int message) {
         if (this.alertDialog != null) {
             this.alertDialog.dismiss();
         }
         this.alertDialog = new AlertDialog.Builder(this).setTitle(title).setMessage(message).create();
         this.alertDialog.show();
+        return this.alertDialog;
     }
 
     public View getContentView() {
         return getWindow().getDecorView().findViewById(android.R.id.content);
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == android.R.id.home) {
-//            this.clickHomeButton();
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-//
-//    protected void clickHomeButton() {
-//        finish();
-//    }
 
 }
