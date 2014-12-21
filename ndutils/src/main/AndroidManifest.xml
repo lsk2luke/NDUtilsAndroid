@@ -1,5 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nelepovds.ndutils">
+    package="com.nelepovds.ndutils" >
+    <!--
+    Use these
+
+     <meta-data
+            android:name="AA_DB_NAME"
+            android:value="example.db" />
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="1" />
+        <meta-data
+            android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/app_games_id" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:theme="@android:style/Theme.Translucent" />
+    -->
+
 
     <!--
     Use these permissions
@@ -26,33 +49,12 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
     -->
-
-    <application android:allowBackup="true">
-
-    </application>
-    <!--
-    Use these
-
-     <meta-data
-            android:name="AA_DB_NAME"
-            android:value="example.db" />
-        <meta-data
-            android:name="AA_DB_VERSION"
-            android:value="1" />
-        <meta-data
-            android:name="com.google.android.gms.games.APP_ID"
-            android:value="@string/app_games_id" />
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
+    <application android:allowBackup="true" >
         <activity
-            android:name="com.google.android.gms.ads.AdActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:theme="@android:style/Theme.Translucent" />
-
-    -->
+            android:name=".ui.billing.RemoveAdMobActivity"
+            android:label="@string/title_activity_remove_ad_mob" >
+        </activity>
+    </application>
 
 </manifest>

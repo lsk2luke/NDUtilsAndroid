@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="title_hue">тон</string>
     <string name="title_saturation">насыщенность</string>
     <string name="title_value">значение</string>
@@ -11,4 +12,12 @@
     <string name="title_apply_line_param">ВЫБРАТЬ ЭТИ ПАРАМЕТРЫ</string>
     <string name="title_dialog_color_params">Параметры цвета</string>
     <string name="dialog_title_line_params">Параметры линии</string>
+    <string name="title_activity_remove_ad_mob">RemoveAdMobActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_ads">Реклама</string>
+    <string name="message_we_will_check_payments">Проверка ранней покупки</string>
+    <string name="title_error">Ошибка</string>
+    <string name="message_error_purchases">Ошибка покупок. Попробуйте позже</string>
+
 </resources>

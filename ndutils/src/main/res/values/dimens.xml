@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="size1">1dp</dimen>
     <dimen name="size2">2dp</dimen>
     <dimen name="size4">4dp</dimen>
@@ -59,4 +60,7 @@
     <dimen name="fsize152">152sp</dimen>
     <dimen name="fsize192">192sp</dimen>
     <dimen name="fsize256">256sp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
 </resources>

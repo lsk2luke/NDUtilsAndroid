@@ -3,8 +3,15 @@ package com.nelepovds.ndutils.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
+
+import com.android.vending.billing.IInAppBillingService;
 
 /**
  * Created by dmitrynelepov on 26.09.14.
@@ -14,6 +21,8 @@ public class NDActivity extends Activity {
 
     protected ProgressDialog progressDialog;
     protected AlertDialog alertDialog;
+
+
 
     protected void onCreate(Bundle savedInstanceState, int layoutId) {
         super.onCreate(savedInstanceState);
@@ -31,11 +40,16 @@ public class NDActivity extends Activity {
     }
 
 
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         this.hideProgressDialog();
+
+
     }
+
 
     public void showProgressDialog(int title, int message) {
         this.showProgressDialog(getString(title), getString(message));
