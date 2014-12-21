@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.view.Window;
 
+import com.nelepovds.ndutils.NDUtilsApplication;
 import com.nelepovds.ndutils.R;
 
 import org.json.JSONException;
@@ -19,15 +21,19 @@ import java.util.ArrayList;
 public class NDRemoveAdMobActivity extends NDBillingActivity {
 
     public static final String ND_BILLING_REMOVE_ABMOD_PRODUCT_ID = "nd_billing_remove_admob_product_id";
+    public static final String ND_BILLING_REMOVE_ABMOD_REQUEST_ID = "nd_billing_remove_admob_request_id";
 
-    private String productId;
-    private Integer requestId;
+    protected String productId;
+    protected Integer requestId;
 
 
     public static void openActivity(Activity activity, Class classActivity, String productId, Integer requestId) {
         Intent intent = new Intent(activity, classActivity);
         intent.putExtra(ND_BILLING_REMOVE_ABMOD_PRODUCT_ID, productId);
+        intent.putExtra(ND_BILLING_REMOVE_ABMOD_REQUEST_ID, requestId);
+
         activity.startActivityForResult(intent, requestId);
+
     }
 
 
@@ -35,7 +41,9 @@ public class NDRemoveAdMobActivity extends NDBillingActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_remove_ad_mob);
         this.productId = getIntent().getStringExtra(ND_BILLING_REMOVE_ABMOD_PRODUCT_ID);
+        this.requestId = getIntent().getIntExtra(ND_BILLING_REMOVE_ABMOD_REQUEST_ID, -1);
         this.initBilling();
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
     }
 
@@ -75,6 +83,7 @@ public class NDRemoveAdMobActivity extends NDBillingActivity {
     protected void showNeedsBuy(ProgressDialog progressDialog) {
         ArrayList<String> skuList = new ArrayList<String>();
         skuList.add(this.productId);
+        skuList.add(NDUtilsApplication.ND_INAPP_TEST_PURCHASES_PURCHASE);
 
         Bundle querySkus = new Bundle();
         querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
@@ -112,11 +121,17 @@ public class NDRemoveAdMobActivity extends NDBillingActivity {
     }
 
     protected void showError() {
-        new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.title_error)
-                .setTitle(R.string.message_error_purchases)
-                .setPositiveButton("OK", null)
-                .show();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.title_error)
+                        .setTitle(R.string.message_error_purchases)
+                        .setPositiveButton("OK", null)
+                        .show();
+            }
+        });
+
     }
 
     /**
