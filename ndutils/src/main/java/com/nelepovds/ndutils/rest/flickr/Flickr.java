@@ -3,8 +3,6 @@ package com.nelepovds.ndutils.rest.flickr;
 import android.app.Activity;
 import android.util.Log;
 
-import com.google.gson.GsonBuilder;
-import com.nelepovds.ndutils.CommonUtils;
 import com.nelepovds.ndutils.rest.RestApi;
 
 import org.json.JSONArray;
@@ -18,7 +16,7 @@ import java.util.ArrayList;
  */
 public class Flickr extends RestApi {
 
-    public static final String FL_METHOD_PHOTOS_SEARCH = "?method=flickr.photos.search&api_key=%s&text=%s&format=json&nojsoncallback=1&per_page=%s&sort=relevance";
+    public static final String FL_METHOD_PHOTOS_SEARCH = "?method=flickr.photos.search&api_key=%s&text=%s&format=json&nojsoncallback=1&per_page=%s&sort=relevance&content_type=7";
     public static final String FL_METHOD_PHOTOS_GET_SIZES = "?method=flickr.photos.getSizes&api_key=%s&photo_id=%s&format=json&nojsoncallback=1";
 
 
