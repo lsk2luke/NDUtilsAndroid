@@ -40,11 +40,15 @@ public class NDRemoveAdMobActivity extends NDBillingActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.activity_remove_ad_mob);
-        this.productId = getIntent().getStringExtra(ND_BILLING_REMOVE_ABMOD_PRODUCT_ID);
-        this.requestId = getIntent().getIntExtra(ND_BILLING_REMOVE_ABMOD_REQUEST_ID, -1);
         this.initBilling();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        this.productId = getIntent().getStringExtra(ND_BILLING_REMOVE_ABMOD_PRODUCT_ID);
+        this.requestId = getIntent().getIntExtra(ND_BILLING_REMOVE_ABMOD_REQUEST_ID, -1);
     }
 
     protected void showDialogCheckPrev() {
@@ -83,7 +87,6 @@ public class NDRemoveAdMobActivity extends NDBillingActivity {
     protected void showNeedsBuy(ProgressDialog progressDialog) {
         ArrayList<String> skuList = new ArrayList<String>();
         skuList.add(this.productId);
-        skuList.add(NDUtilsApplication.ND_INAPP_TEST_PURCHASES_PURCHASE);
 
         Bundle querySkus = new Bundle();
         querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
@@ -138,8 +141,8 @@ public class NDRemoveAdMobActivity extends NDBillingActivity {
      * Восстановить покупки.
      */
     protected void purchaseRemoveAd() {
-//        setResult(Activity.RESULT_OK);
-//        finish();
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override
