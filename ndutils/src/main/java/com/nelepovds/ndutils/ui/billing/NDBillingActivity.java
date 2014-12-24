@@ -31,10 +31,14 @@ public class NDBillingActivity extends NDActivity {
             @Override
             public void onServiceConnected(ComponentName name,
                                            IBinder service) {
-                mBillingService = IInAppBillingService.Stub.asInterface(service);
+                setBillingService(IInAppBillingService.Stub.asInterface(service));
             }
         };
         getActivity().bindService(serviceIntent, mBillingServiceConn, Context.BIND_AUTO_CREATE);
+    }
+
+    public void setBillingService(IInAppBillingService mBillingService) {
+        this.mBillingService = mBillingService;
     }
 
     @Override

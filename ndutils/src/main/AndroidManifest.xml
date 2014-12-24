@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nelepovds.ndutils" >
+
     <!--
     Use these
 
@@ -22,8 +23,6 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />
     -->
-
-
     <!--
     Use these permissions
      <uses-permission android:name="android.permission.INTERNET" />
@@ -54,6 +53,10 @@
         <activity
             android:name=".ui.billing.RemoveAdMobActivity"
             android:label="@string/title_activity_remove_ad_mob" >
+        </activity>
+        <activity
+            android:name=".ui.billing.NDBillingListPurchasesActivity"
+            android:label="@string/title_activity_ndbilling_list_purchases" >
         </activity>
     </application>
 

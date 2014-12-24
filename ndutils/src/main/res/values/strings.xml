@@ -19,5 +19,9 @@
     <string name="message_we_will_check_payments">Проверка ранней покупки</string>
     <string name="title_error">Ошибка</string>
     <string name="message_error_purchases">Ошибка покупок. Попробуйте позже</string>
+    <string name="title_activity_ndbilling_list_purchases">NDBillingListPurchasesActivity</string>
+    <string name="title_purchasing">Покупка</string>
+    <string name="dialog_purchases">Покупки</string>
+    <string name="dialog_loading_purchases">Загрузка доступных покупок</string>
 
 </resources>
