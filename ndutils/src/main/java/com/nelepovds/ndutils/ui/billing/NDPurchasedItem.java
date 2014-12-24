@@ -29,4 +29,12 @@ public class NDPurchasedItem extends BaseClass {
     @SerializedName(value = "purchaseToken")
     public String purchaseToken;
 
+    public static NDPurchasedItem fromPurchaseItem(NDPurchaseItem purchaseItem) {
+        NDPurchasedItem retItem = null;
+        if (purchaseItem != null) {
+            retItem = new NDPurchasedItem();
+            retItem.productId = purchaseItem.productId;
+        }
+        return retItem;
+    }
 }
