@@ -4,7 +4,8 @@ import android.util.Log;
 
 import com.squareup.okhttp.OkHttpClient;
 
-import retrofit.Callback;
+import java.util.Locale;
+
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
@@ -23,16 +24,17 @@ public abstract class NDRestBaseAPI<T> {
     protected abstract String getWatcherID();
 
 
-
-
-    public NDRestBaseAPI(String endPoint, Class<T>  restInterfaceClass){
+    public NDRestBaseAPI(String endPoint, Class<T> restInterfaceClass) {
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
             @Override
             public void intercept(RequestFacade request) {
                 if (getWatcherID() != null) {
                     request.addQueryParam("WatcherID", getWatcherID());
-                    request.addQueryParam("AppOS", "Android");
                 }
+                request.addQueryParam("AppOS", "Android");
+                String language = Locale.getDefault().getLanguage();
+                request.addQueryParam("Language", language.toLowerCase());
+
             }
         };
 
