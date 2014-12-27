@@ -1,6 +1,8 @@
 package com.nelepovds.ndutils.rest;
 
 
+import android.util.Log;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.query.Select;
@@ -11,9 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.internal.bind.DateTypeAdapter;
 import com.nelepovds.ndutils.CommonUtils;
-
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -40,12 +40,13 @@ public class BaseClass extends Model {
     public static Gson gsonAdapter() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder
-                .registerTypeHierarchyAdapter(BaseClass.class,new BaseClassAdapter())
+                .registerTypeHierarchyAdapter(BaseClass.class, new BaseClassAdapter())
                 .setDateFormat(CommonUtils.DATE_FULL_FORMAT)
                 .setPrettyPrinting()
                 .create();
         return gson;
     }
+
 
     @Override
     public String toString() {
@@ -79,6 +80,8 @@ public class BaseClass extends Model {
                                 jsonObject.addProperty(serializedName.value(), CommonUtils.formatDate((Date) valueField, CommonUtils.DATE_FULL_FORMAT));
                             } else if (fields[i].getType().isAssignableFrom(Long.class)) {
                                 jsonObject.addProperty(serializedName.value(), (Long) valueField);
+                            } else if (fields[i].getType().isAssignableFrom(BaseClass.class)) {
+                                Log.wtf("FOUND BASE CLASS", serializedName.value());
                             }
                         }
                     } catch (IllegalAccessException e) {
