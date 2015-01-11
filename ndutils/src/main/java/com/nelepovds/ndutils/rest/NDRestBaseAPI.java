@@ -23,6 +23,10 @@ public abstract class NDRestBaseAPI<T> {
 
     protected abstract String getWatcherID();
 
+    protected String getLanguage() {
+        return Locale.getDefault().getLanguage().toLowerCase();
+    }
+
 
     public NDRestBaseAPI(String endPoint, Class<T> restInterfaceClass) {
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
@@ -32,8 +36,7 @@ public abstract class NDRestBaseAPI<T> {
                     request.addQueryParam("WatcherID", getWatcherID());
                 }
                 request.addQueryParam("AppOS", "Android");
-                String language = Locale.getDefault().getLanguage();
-                request.addQueryParam("Language", language.toLowerCase());
+                request.addQueryParam("Language", getLanguage());
 
             }
         };

@@ -6,5 +6,10 @@
     <color name="colorBlack">#000000</color>
     <color name="colorWhiteHint">#66ffffff</color>
     <color name="colorDark">#454958</color>
-
+    <color name="colorGreenDark">#388E3C</color>
+    <color name="colorGreen">#4CAF50</color>
+    <color name="colorGreen_Pressed">#C8E6C9</color>
+    <color name="colorRedDark">#D32F2F</color>
+    <color name="colorRed">#F44336</color>
+    <color name="colorRed_Pressed">#FFCDD2</color>
 </resources>

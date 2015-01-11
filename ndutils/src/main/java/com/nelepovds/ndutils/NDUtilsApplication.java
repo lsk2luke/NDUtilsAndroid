@@ -4,9 +4,11 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
@@ -85,7 +87,7 @@ public class NDUtilsApplication extends Application {
             return "";
         }
         int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
-        int currentVersion = getAppVersion(context);
+        int currentVersion = getAppVersion();
         if (registeredVersion != currentVersion) {
             Log.i(this.toString(), "App version changed.");
             return "";
@@ -95,7 +97,7 @@ public class NDUtilsApplication extends Application {
 
     private void storeRegistrationId(String regId) {
         final SharedPreferences prefs = getGCMPreferences(this);
-        int appVersion = getAppVersion(this);
+        int appVersion = getAppVersion();
         Log.i(this.toString(), "Saving regId on app version " + appVersion);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, regId);
@@ -108,24 +110,41 @@ public class NDUtilsApplication extends Application {
                 Context.MODE_PRIVATE);
     }
 
-    public int getAppVersion(Context context) {
+    public int getAppVersion() {
         try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
+            PackageInfo packageInfo = getPackageManager()
+                    .getPackageInfo(getPackageName(), 0);
             return packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException("Could not get package name: " + e);
         }
     }
 
-    public String getAppVersionName(Context context) {
+    public String getAppVersionName() {
         try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
+            PackageInfo packageInfo = getPackageManager()
+                    .getPackageInfo(getPackageName(), 0);
             return packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException("Could not get package name: " + e);
         }
+    }
+
+    public Bundle getMetaData() {
+        Bundle retMetaData = null;
+        try {
+            ApplicationInfo ai = null;
+            ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            retMetaData = ai.metaData;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return retMetaData;
+    }
+
+    public boolean isDebug() {
+        return (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+
     }
 
     public static interface IGCMRegisterListener {

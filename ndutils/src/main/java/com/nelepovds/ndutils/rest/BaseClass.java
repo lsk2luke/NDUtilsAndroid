@@ -57,6 +57,7 @@ public class BaseClass extends Model {
         return retString;
     }
 
+
     public static class BaseClassAdapter<T> implements JsonSerializer<T> {
 
         @Override
@@ -138,8 +139,6 @@ public class BaseClass extends Model {
         if (foundItem != null) {
             Field[] fields = checkObject.getClass().getFields();
             for (int i = 0; i < fields.length; i++) {
-
-
                 if (fields[i].isAnnotationPresent(SerializedName.class)) {
                     try {
                         if (BaseClass.class.isAssignableFrom(fields[i].getType())) {
