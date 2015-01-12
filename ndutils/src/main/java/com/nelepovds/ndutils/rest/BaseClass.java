@@ -18,7 +18,9 @@ import com.nelepovds.ndutils.CommonUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.AbstractMap;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class BaseClass extends Model {
@@ -85,6 +87,7 @@ public class BaseClass extends Model {
                                 jsonObject.addProperty(serializedName.value(), (Long) valueField);
                             } else if (fields[i].getType().isAssignableFrom(BaseClass.class)) {
                                 Log.wtf("FOUND BASE CLASS", serializedName.value());
+                                jsonObject.add(serializedName.value(), gsonAdapter().toJsonTree(valueField));
                             } else if (List.class.isAssignableFrom(fields[i].getType())) {
                                 List listData = (List) valueField;
                                 JsonArray jsonArray = new JsonArray();
@@ -92,6 +95,19 @@ public class BaseClass extends Model {
                                     jsonArray.add(gsonAdapter().toJsonTree(listObj));
                                 }
                                 jsonObject.add(serializedName.value(), jsonArray);
+                            } else  {
+//                                JsonArray jsonArray = new JsonArray();
+//                                AbstractMap mapData = (AbstractMap) valueField;
+//                                Iterator keys = mapData.keySet().iterator();
+//                                while (keys.hasNext()) {
+//                                    String key = keys.next().toString();
+//                                    Object value = mapData.get(key);
+//                                    JsonElement element = gsonAdapter().toJsonTree(value);
+//                                    JsonObject object = new JsonObject();
+//                                    object.add(key, element);
+//                                    jsonArray.add(object);
+//                                }
+                                jsonObject.add(serializedName.value(), gsonAdapter().toJsonTree(valueField));
                             }
                         }
                     } catch (IllegalAccessException e) {
