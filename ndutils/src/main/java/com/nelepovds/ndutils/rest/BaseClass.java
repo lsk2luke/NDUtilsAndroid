@@ -8,6 +8,7 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
@@ -84,8 +85,13 @@ public class BaseClass extends Model {
                                 jsonObject.addProperty(serializedName.value(), (Long) valueField);
                             } else if (fields[i].getType().isAssignableFrom(BaseClass.class)) {
                                 Log.wtf("FOUND BASE CLASS", serializedName.value());
-                            } else if (List.class.isAssignableFrom(fields[i].getType())){
-//                                jsonObject.
+                            } else if (List.class.isAssignableFrom(fields[i].getType())) {
+                                List listData = (List) valueField;
+                                JsonArray jsonArray = new JsonArray();
+                                for (Object listObj : listData) {
+                                    jsonArray.add(gsonAdapter().toJsonTree(listObj));
+                                }
+                                jsonObject.add(serializedName.value(), jsonArray);
                             }
                         }
                     } catch (IllegalAccessException e) {
