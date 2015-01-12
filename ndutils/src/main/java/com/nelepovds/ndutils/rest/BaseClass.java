@@ -18,6 +18,7 @@ import com.nelepovds.ndutils.CommonUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Date;
+import java.util.List;
 
 public class BaseClass extends Model {
 
@@ -83,6 +84,8 @@ public class BaseClass extends Model {
                                 jsonObject.addProperty(serializedName.value(), (Long) valueField);
                             } else if (fields[i].getType().isAssignableFrom(BaseClass.class)) {
                                 Log.wtf("FOUND BASE CLASS", serializedName.value());
+                            } else if (List.class.isAssignableFrom(fields[i].getType())){
+//                                jsonObject.
                             }
                         }
                     } catch (IllegalAccessException e) {

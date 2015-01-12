@@ -32,12 +32,7 @@ public abstract class NDRestBaseAPI<T> {
         RequestInterceptor requestInterceptor = new RequestInterceptor() {
             @Override
             public void intercept(RequestFacade request) {
-                if (getWatcherID() != null) {
-                    request.addQueryParam("WatcherID", getWatcherID());
-                }
-                request.addQueryParam("AppOS", "Android");
-                request.addQueryParam("Language", getLanguage());
-
+                interceptRequest(request);
             }
         };
 
@@ -55,6 +50,14 @@ public abstract class NDRestBaseAPI<T> {
                 .setClient(new OkClient(new OkHttpClient()))
                 .build();
         this.service = this.adapter.create(restInterfaceClass);
+    }
+
+    protected void interceptRequest(RequestInterceptor.RequestFacade request) {
+        if (getWatcherID() != null) {
+            request.addQueryParam("WatcherID", getWatcherID());
+        }
+        request.addQueryParam("AppOS", "Android");
+        request.addQueryParam("Language", getLanguage());
     }
 
 
