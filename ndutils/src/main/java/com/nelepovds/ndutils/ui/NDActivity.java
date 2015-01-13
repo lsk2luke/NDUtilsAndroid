@@ -3,8 +3,11 @@ package com.nelepovds.ndutils.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 /**
  * Created by dmitrynelepov on 26.09.14.
@@ -87,4 +90,7 @@ public class NDActivity extends Activity {
     }
 
 
+    public void hideKeyboard() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    }
 }

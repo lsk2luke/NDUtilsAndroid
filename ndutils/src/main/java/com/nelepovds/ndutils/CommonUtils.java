@@ -24,6 +24,7 @@ import android.telephony.TelephonyManager;
 import android.util.Patterns;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -257,6 +258,8 @@ public class CommonUtils {
             return accounts;
 
     }
+
+
 
 
     public static interface IDateTimeSetterListener {
