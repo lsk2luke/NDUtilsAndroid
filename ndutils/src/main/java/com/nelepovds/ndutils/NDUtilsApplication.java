@@ -43,6 +43,10 @@ public class NDUtilsApplication extends Application {
         this.loadPreferences();
     }
 
+    public static Boolean isRelease() {
+        return !BuildConfig.DEBUG;
+    }
+
     public void rateApp() {
         try {
             Uri uri = Uri.parse("market://details?id=" + this.getPackageName());
